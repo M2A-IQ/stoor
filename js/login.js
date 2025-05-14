@@ -29,7 +29,18 @@ document.addEventListener('DOMContentLoaded', () => {
             spinnerLogin.classList.remove('d-none');
             btnTextLogin.textContent = 'جاري إرسال الرمز...';
 
-            await loginWithPhoneAndPassword(phone);
+            // تهيئة reCAPTCHA قبل إرسال رمز التحقق
+            const verifier = await initRecaptcha();
+            if (!verifier) {
+                throw new Error('فشل في تهيئة reCAPTCHA');
+            }
+
+            const result = await loginWithPhoneAndPassword(phone);
+            if (result) {
+                // إظهار نموذج التحقق وإخفاء نموذج تسجيل الدخول
+                document.getElementById('verificationCodeForm').classList.remove('d-none');
+                document.getElementById('loginForm').classList.add('d-none');
+            }
         } catch (error) {
             // إظهار رسالة الخطأ
             let errorMessage = 'حدث خطأ أثناء إرسال رمز التحقق';
@@ -44,7 +55,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     errorMessage = 'تم تجاوز الحد المسموح به من المحاولات';
                     break;
             }
-            alert(errorMessage);
+            const errorElement = document.getElementById('errorMessage');
+            errorElement.textContent = errorMessage;
+            errorElement.classList.remove('d-none');
         } finally {
             // إعادة تفعيل زر الإرسال وإخفاء مؤشر التحميل
             loginButton.disabled = false;

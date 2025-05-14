@@ -23,21 +23,37 @@ const analytics = getAnalytics(app);
 let recaptchaVerifier;
 
 // دالة تهيئة RecaptchaVerifier
-function initRecaptcha() {
-    if (!recaptchaVerifier) {
-        recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-            'size': 'invisible',
-            'callback': (response) => {
-                // تم التحقق بنجاح
-                console.log('reCAPTCHA solved');
-            },
-            'expired-callback': () => {
-                // انتهت صلاحية التحقق
-                console.log('reCAPTCHA expired');
-            }
-        });
+async function initRecaptcha() {
+    try {
+        if (!recaptchaVerifier) {
+            recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+                'size': 'normal',
+                'callback': (response) => {
+                    // تم التحقق بنجاح
+                    console.log('reCAPTCHA solved');
+                    // تفعيل زر إرسال رمز التحقق
+                    const loginButton = document.getElementById('loginButton');
+                    if (loginButton) loginButton.disabled = false;
+                },
+                'expired-callback': () => {
+                    // انتهت صلاحية التحقق
+                    console.log('reCAPTCHA expired');
+                    // إعادة تهيئة reCAPTCHA
+                    recaptchaVerifier = null;
+                    initRecaptcha();
+                }
+            });
+            // تعطيل زر إرسال رمز التحقق حتى يتم حل reCAPTCHA
+            const loginButton = document.getElementById('loginButton');
+            if (loginButton) loginButton.disabled = true;
+            
+            await recaptchaVerifier.render();
+        }
+        return recaptchaVerifier;
+    } catch (error) {
+        console.error('خطأ في تهيئة reCAPTCHA:', error);
+        return null;
     }
-    return recaptchaVerifier;
 }
 
 // دالة تسجيل الدخول باستخدام رقم الهاتف
