@@ -131,8 +131,11 @@
                             <div class="invalid-feedback">يرجى إدخال رقم هاتف صحيح (10 أرقام)</div>
                             <div class="form-text">مثال: 7801234567</div>
                         </div>
-                        <div id="recaptcha-container"></div>
-                        <button type="submit" class="btn btn-primary w-100 mb-3" id="loginButton">
+                        <div class="mb-3">
+                            <label class="form-label">التحقق من أنك لست روبوتاً</label>
+                            <div id="recaptcha-container" class="d-flex justify-content-center mb-3"></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 mb-3" id="loginButton" disabled>
                             <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                             <span class="btn-text"><i class="fas fa-sign-in-alt me-2"></i> إرسال رمز التحقق</span>
                         </button>
@@ -162,9 +165,20 @@
                             <script src="https://accounts.google.com/gsi/client" async defer></script>
                             <div id="g_id_onload"
                                 data-client_id="500181738580-7beju3fafm523360k4btmpetos0e0pa8.apps.googleusercontent.com"
-                                data-callback="handleCredentialResponse">
+                                data-callback="handleCredentialResponse"
+                                data-auto_prompt="false"
+                                data-auto_select="true"
+                                data-ux_mode="popup"
+                                data-allowed_parent_origin="http://localhost:5500">
                             </div>
-                            <div class="g_id_signin" data-type="standard"></div>
+                            <div class="g_id_signin" 
+                                data-type="standard"
+                                data-size="large"
+                                data-theme="outline"
+                                data-text="sign_in_with"
+                                data-shape="rectangular"
+                                data-logo_alignment="left">
+                            </div>
                             <button onclick="loginWithFacebook()" class="btn btn-primary ms-2">
                                 <i class="fab fa-facebook-f"></i> تسجيل الدخول بالفيسبوك
                             </button>
