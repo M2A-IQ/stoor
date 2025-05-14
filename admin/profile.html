@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الملف الشخصي | لوحة التحكم</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <!-- شريط التنقل العلوي -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="dashboard.html">لوحة التحكم</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="dashboard.html">
+                            <i class="fas fa-tachometer-alt me-1"></i> الرئيسية
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="products.html">
+                            <i class="fas fa-box me-1"></i> المنتجات
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="orders.html">
+                            <i class="fas fa-shopping-cart me-1"></i> الطلبات
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="customers.html">
+                            <i class="fas fa-users me-1"></i> العملاء
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="categories.html">
+                            <i class="fas fa-tags me-1"></i> الأقسام
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="reports.html">
+                            <i class="fas fa-chart-bar me-1"></i> التقارير
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="settings.html">
+                            <i class="fas fa-cog me-1"></i> الإعدادات
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <button class="theme-toggle" onclick="toggleDarkMode()" title="تبديل الوضع الداكن">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i> المسؤول
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item active" href="profile.html"><i class="fas fa-user me-1"></i> الملف الشخصي</a></li>
+                            <li><a class="dropdown-item" href="settings.html"><i class="fas fa-cog me-1"></i> الإعدادات</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-1"></i> تسجيل الخروج</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- المحتوى الرئيسي -->
+    <div class="container py-4">
+        <div class="row">
+            <!-- معلومات الملف الشخصي -->
+            <div class="col-lg-4 mb-4">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <img src="../images/admin-avatar.png" alt="صورة الملف الشخصي" class="rounded-circle img-thumbnail" style="width: 150px; height: 150px;">
+                            <div class="mt-3">
+                                <button class="btn btn-sm btn-outline-primary" onclick="document.getElementById('avatarUpload').click()">
+                                    <i class="fas fa-camera me-1"></i> تغيير الصورة
+                                </button>
+                                <input type="file" id="avatarUpload" hidden accept="image/*">
+                            </div>
+                        </div>
+                        <h5 class="card-title">أحمد محمد</h5>
+                        <p class="text-muted">مدير المتجر</p>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="#" class="btn btn-outline-primary btn-sm">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="btn btn-outline-primary btn-sm">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                            <a href="#" class="btn btn-outline-primary btn-sm">
+                                <i class="fab fa-github"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-footer text-muted">
+                        <div class="row text-center">
+                            <div class="col">
+                                <h6 class="mb-0">150</h6>
+                                <small>طلب مكتمل</small>
+                            </div>
+                            <div class="col border-start">
+                                <h6 class="mb-0">45</h6>
+                                <small>منتج مضاف</small>
+                            </div>
+                            <div class="col border-start">
+                                <h6 class="mb-0">98%</h6>
+                                <small>رضا العملاء</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- تفاصيل الملف الشخصي -->
+            <div class="col-lg-8">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">المعلومات الشخصية</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="profileForm">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">الاسم الأول</label>
+                                    <input type="text" class="form-control" value="أحمد">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">الاسم الأخير</label>
+                                    <input type="text" class="form-control" value="محمد">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">البريد الإلكتروني</label>
+                                    <input type="email" class="form-control" value="ahmed@example.com">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">رقم الهاتف</label>
+                                    <input type="tel" class="form-control" value="+966123456789">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">نبذة تعريفية</label>
+                                    <textarea class="form-control" rows="3">مدير متجر إلكتروني مع خبرة 5 سنوات في مجال التجارة الإلكترونية وإدارة المبيعات.</textarea>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-primary" form="profileForm">
+                            <i class="fas fa-save me-1"></i> حفظ التغييرات
+                        </button>
+                    </div>
+                </div>
+
+                <!-- سجل النشاط -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">سجل النشاط</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-icon bg-primary">
+                                    <i class="fas fa-box text-white"></i>
+                                </div>
+                                <div class="timeline-content">
+                                    <h6 class="mb-1">إضافة منتج جديد</h6>
+                                    <p class="mb-0">تمت إضافة "هاتف ذكي سامسونج جالكسي S21"</p>
+                                    <small class="text-muted">منذ 30 دقيقة</small>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-icon bg-success">
+                                    <i class="fas fa-check text-white"></i>
+                                </div>
+                                <div class="timeline-content">
+                                    <h6 class="mb-1">تحديث حالة الطلب</h6>
+                                    <p class="mb-0">تم تحديث حالة الطلب #12345 إلى "تم التسليم"</p>
+                                    <small class="text-muted">منذ ساعتين</small>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-icon bg-warning">
+                                    <i class="fas fa-tags text-white"></i>
+                                </div>
+                                <div class="timeline-content">
+                                    <h6 class="mb-1">تعديل تصنيف</h6>
+                                    <p class="mb-0">تم تحديث تصنيف "الإلكترونيات"</p>
+                                    <small class="text-muted">منذ 3 ساعات</small>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-icon bg-info">
+                                    <i class="fas fa-cog text-white"></i>
+                                </div>
+                                <div class="timeline-content">
+                                    <h6 class="mb-1">تحديث الإعدادات</h6>
+                                    <p class="mb-0">تم تحديث إعدادات الشحن</p>
+                                    <small class="text-muted">منذ 5 ساعات</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- مكتبات JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="js/admin.js"></script>
+
+    <!-- سكريبت خاص بصفحة الملف الشخصي -->
+    <script>
+        // تحديث الصورة الشخصية
+        document.getElementById('avatarUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.querySelector('.img-thumbnail').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // حفظ معلومات الملف الشخصي
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // في التطبيق الحقيقي، سيتم إرسال البيانات إلى الخادم
+            alert('تم حفظ التغييرات بنجاح');
+        });
+
+        // تسجيل الخروج
+        function logout() {
+            if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
+                // في التطبيق الحقيقي، سيتم تنفيذ عملية تسجيل الخروج
+                window.location.href = '../login.html';
+            }
+        }
+    </script>
+
+    <style>
+        /* أنماط سجل النشاط */
+        .timeline {
+            position: relative;
+            padding: 0;
+            list-style: none;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-icon {
+            position: absolute;
+            left: 0;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 2rem;
+        }
+
+        .timeline-icon i {
+            font-size: 1rem;
+        }
+
+        .timeline-content {
+            padding: 0.5rem 1rem;
+            background-color: var(--bs-light);
+            border-radius: 0.25rem;
+        }
+
+        /* تعديلات الوضع الداكن */
+        [data-bs-theme="dark"] .timeline-content {
+            background-color: var(--bs-dark);
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم | متجر إلكتروني</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <!-- شريط التنقل العلوي -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="dashboard.html">لوحة التحكم</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="dashboard.html">
+                            <i class="fas fa-tachometer-alt me-1"></i> الرئيسية
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="products.html">
+                            <i class="fas fa-box me-1"></i> المنتجات
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="orders.html">
+                            <i class="fas fa-shopping-cart me-1"></i> الطلبات
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="customers.html">
+                            <i class="fas fa-users me-1"></i> العملاء
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="categories.html">
+                            <i class="fas fa-tags me-1"></i> الأقسام
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="reports.html">
+                            <i class="fas fa-chart-bar me-1"></i> التقارير
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="settings.html">
+                            <i class="fas fa-cog me-1"></i> الإعدادات
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <button class="theme-toggle" onclick="toggleDarkMode()" title="تبديل الوضع الداكن">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i> المسؤول
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="profile.html"><i class="fas fa-user me-1"></i> الملف الشخصي</a></li>
+                            <li><a class="dropdown-item" href="settings.html"><i class="fas fa-cog me-1"></i> الإعدادات</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-1"></i> تسجيل الخروج</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- المحتوى الرئيسي -->
+    <div class="container py-4">
+        <!-- إحصائيات سريعة -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="card bg-primary text-white h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title mb-1">إجمالي المبيعات</h6>
+                                <h3 class="mb-0">15,350 ر.س</h3>
+                                <small class="text-white-50">+12% من الشهر الماضي</small>
+                            </div>
+                            <div class="fs-1 text-white-50">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title mb-1">الطلبات الجديدة</h6>
+                                <h3 class="mb-0">24</h3>
+                                <small class="text-white-50">اليوم</small>
+                            </div>
+                            <div class="fs-1 text-white-50">
+                                <i class="fas fa-shopping-bag"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-white h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title mb-1">العملاء الجدد</h6>
+                                <h3 class="mb-0">156</h3>
+                                <small class="text-white-50">هذا الشهر</small>
+                            </div>
+                            <div class="fs-1 text-white-50">
+                                <i class="fas fa-users"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title mb-1">المنتجات</h6>
+                                <h3 class="mb-0">1,203</h3>
+                                <small class="text-white-50">إجمالي المنتجات</small>
+                            </div>
+                            <div class="fs-1 text-white-50">
+                                <i class="fas fa-box"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- أحدث الطلبات والمبيعات -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-8">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">أحدث الطلبات</h5>
+                        <a href="orders.html" class="btn btn-sm btn-primary">عرض الكل</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>رقم الطلب</th>
+                                        <th>العميل</th>
+                                        <th>المنتجات</th>
+                                        <th>المبلغ</th>
+                                        <th>الحالة</th>
+                                        <th>التاريخ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>#12345</td>
+                                        <td>أحمد محمد</td>
+                                        <td>3 منتجات</td>
+                                        <td>750 ر.س</td>
+                                        <td><span class="badge bg-success">مكتمل</span></td>
+                                        <td>2023/12/15</td>
+                                    </tr>
+                                    <tr>
+                                        <td>#12344</td>
+                                        <td>سارة أحمد</td>
+                                        <td>1 منتج</td>
+                                        <td>250 ر.س</td>
+                                        <td><span class="badge bg-warning">قيد المعالجة</span></td>
+                                        <td>2023/12/15</td>
+                                    </tr>
+                                    <tr>
+                                        <td>#12343</td>
+                                        <td>محمد علي</td>
+                                        <td>2 منتجات</td>
+                                        <td>500 ر.س</td>
+                                        <td><span class="badge bg-info">قيد الشحن</span></td>
+                                        <td>2023/12/14</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">المبيعات حسب التصنيف</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>إلكترونيات</span>
+                                <span>45%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-primary" style="width: 45%"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>ملابس</span>
+                                <span>30%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-success" style="width: 30%"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>أثاث منزلي</span>
+                                <span>15%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-warning" style="width: 15%"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>مستلزمات رياضية</span>
+                                <span>10%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-info" style="width: 10%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- المنتجات الأكثر مبيعاً والتنبيهات -->
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">المنتجات الأكثر مبيعاً</h5>
+                        <a href="products.html" class="btn btn-sm btn-primary">عرض الكل</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>المنتج</th>
+                                        <th>المبيعات</th>
+                                        <th>السعر</th>
+                                        <th>التقييم</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>هاتف ذكي</td>
+                                        <td>150</td>
+                                        <td>2,499 ر.س</td>
+                                        <td>
+                                            <div class="text-warning">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star-half-alt"></i>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>سماعات لاسلكية</td>
+                                        <td>120</td>
+                                        <td>399,000 د.ع</td>
+                                        <td>
+                                            <div class="text-warning">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="far fa-star"></i>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>ساعة ذكية</td>
+                                        <td>90</td>
+                                        <td>899 ر.س</td>
+                                        <td>
+                                            <div class="text-warning">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">آخر التنبيهات</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <span class="badge bg-success rounded-circle p-2">
+                                            <i class="fas fa-check"></i>
+                                        </span>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <p class="mb-0">تم اكتمال الطلب #12345</p>
+                                        <small class="text-muted">منذ 5 دقائق</small>
+                                    </div>
+                                </div>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <span class="badge bg-warning rounded-circle p-2">
+                                            <i class="fas fa-exclamation"></i>
+                                        </span>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <p class="mb-0">المنتج "هاتف ذكي" أوشك على النفاد</p>
+                                        <small class="text-muted">منذ 15 دقيقة</small>
+                                    </div>
+                                </div>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <span class="badge bg-info rounded-circle p-2">
+                                            <i class="fas fa-user"></i>
+                                        </span>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <p class="mb-0">تم تسجيل عميل جديد</p>
+                                        <small class="text-muted">منذ 30 دقيقة</small>
+                                    </div>
+                                </div>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <span class="badge bg-danger rounded-circle p-2">
+                                            <i class="fas fa-times"></i>
+                                        </span>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <p class="mb-0">تم إلغاء الطلب #12342</p>
+                                        <small class="text-muted">منذ ساعة</small>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- مكتبات JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="js/admin.js"></script>
+
+    <!-- سكريبت خاص بلوحة التحكم -->
+    <script>
+        // دالة تسجيل الخروج
+        function logout() {
+            if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
+                // في التطبيق الحقيقي، سيتم إرسال طلب لتسجيل الخروج إلى الخادم
+                window.location.href = '../login.html';
+            }
+        }
+
+        // تحديث البيانات في الوقت الحقيقي (محاكاة)
+        setInterval(function() {
+            // في التطبيق الحقيقي، سيتم جلب البيانات من الخادم
+            // هذا مجرد مثال للمحاكاة
+            const notifications = document.querySelector('.list-group');
+            const time = new Date().toLocaleTimeString();
+            
+            if (Math.random() > 0.8) {
+                const types = ['success', 'warning', 'info', 'danger'];
+                const icons = ['check', 'exclamation', 'user', 'times'];
+                const messages = [
+                    'تم اكتمال طلب جديد',
+                    'منتج أوشك على النفاد',
+                    'تم تسجيل عميل جديد',
+                    'تم إلغاء طلب'
+                ];
+                
+                const index = Math.floor(Math.random() * types.length);
+                const notification = `
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <span class="badge bg-${types[index]} rounded-circle p-2">
+                                    <i class="fas fa-${icons[index]}"></i>
+                                </span>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <p class="mb-0">${messages[index]}</p>
+                                <small class="text-muted">الآن</small>
+                            </div>
+                        </div>
+                    </a>
+                `;
+                
+                notifications.insertAdjacentHTML('afterbegin', notification);
+                if (notifications.children.length > 4) {
+                    notifications.lastElementChild.remove();
+                }
+            }
+        }, 5000);
+    </script>
+</body>
+</html>

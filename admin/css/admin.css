@@ -1,0 +1,98 @@
+/* أنماط خاصة بلوحة التحكم */
+
+/* أنماط البطاقات الإحصائية */
+.card {
+    transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card .fs-1 {
+    opacity: 0.7;
+}
+
+/* أنماط الجداول */
+.table th {
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+/* أنماط شريط التقدم */
+.progress {
+    height: 8px;
+    border-radius: 4px;
+}
+
+/* أنماط التنبيهات */
+.list-group-item {
+    border-right: none;
+    border-left: none;
+    padding: 1rem;
+}
+
+.list-group-item:first-child {
+    border-top: none;
+}
+
+.list-group-item:last-child {
+    border-bottom: none;
+}
+
+.badge.rounded-circle {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* أنماط الوضع الداكن */
+body.dark-mode .card:not([class*="bg-"]) {
+    background-color: #000000;
+    border-color: #1a1a1a;
+}
+
+body.dark-mode .list-group-item {
+    background-color: #000000;
+    border-color: #1a1a1a;
+    color: #ffffff;
+}
+
+body.dark-mode .list-group-item:hover {
+    background-color: #1a1a1a;
+}
+
+body.dark-mode .table {
+    color: #ffffff;
+}
+
+body.dark-mode .table td,
+body.dark-mode .table th {
+    border-color: #1a1a1a;
+}
+
+body.dark-mode .text-muted {
+    color: #b0b0b0 !important;
+}
+
+/* أنماط متجاوبة */
+@media (max-width: 768px) {
+    .card-title {
+        font-size: 1rem;
+    }
+
+    .table {
+        font-size: 0.9rem;
+    }
+
+    .badge.rounded-circle {
+        width: 28px;
+        height: 28px;
+    }
+}

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سلة التسوق | متجر إلكتروني</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* أنماط خاصة بصفحة سلة التسوق */
+        .cart-item-img {
+            width: 100px;
+            height: 100px;
+            background-color: #f1f1f1;
+            background-position: center;
+            background-size: cover;
+        }
+        
+        .quantity-control {
+            display: flex;
+            align-items: center;
+        }
+        
+        .quantity-control button {
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .quantity-control input {
+            width: 50px;
+            text-align: center;
+        }
+        
+        .cart-summary {
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            padding: 20px;
+        }
+        
+        .empty-cart {
+            text-align: center;
+            padding: 50px 0;
+        }
+        
+        .empty-cart i {
+            font-size: 5rem;
+            color: #dee2e6;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- شريط التنقل العلوي -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">متجرنا الإلكتروني</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">الرئيسية</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            الأقسام
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="products/category.html?id=1">إلكترونيات</a></li>
+                            <li><a class="dropdown-item" href="products/category.html?id=2">ملابس</a></li>
+                            <li><a class="dropdown-item" href="products/category.html?id=3">أثاث منزلي</a></li>
+                            <li><a class="dropdown-item" href="products/category.html?id=4">مستلزمات رياضية</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="products/all.html">جميع المنتجات</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">اتصل بنا</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <button class="theme-toggle" onclick="toggleDarkMode()" title="تبديل الوضع الداكن">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <a href="cart.html" class="btn btn-outline-light me-2 active">
+                        <i class="fas fa-shopping-cart"></i> سلة التسوق <span class="badge bg-danger cart-count">0</span>
+                    </a>
+                    <a href="login.html" class="btn btn-outline-light me-2">
+                        <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+                    </a>
+                    <a href="register.html" class="btn btn-light">
+                        <i class="fas fa-user-plus"></i> إنشاء حساب
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- محتوى سلة التسوق -->
+    <div class="container py-5">
+        <h1 class="mb-4">سلة التسوق</h1>
+        
+        <div class="row">
+            <!-- قائمة المنتجات في السلة -->
+            <div class="col-lg-8">
+                <div class="cart-container">
+                    <!-- سيتم ملء هذا القسم ديناميكيًا باستخدام JavaScript -->
+                    <div id="cart-items" class="cart-items">
+                        <!-- هنا سيتم عرض عناصر السلة -->
+                    </div>
+                    
+                    <!-- عرض السلة الفارغة -->
+                    <div id="empty-cart" class="empty-cart d-none">
+                        <i class="fas fa-shopping-cart"></i>
+                        <h3>سلة التسوق فارغة</h3>
+                        <p>لم تقم بإضافة أي منتجات إلى سلة التسوق بعد.</p>
+                        <a href="index.html" class="btn btn-primary mt-3">العودة للتسوق</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ملخص السلة -->
+            <div class="col-lg-4">
+                <div class="cart-summary">
+                    <h4 class="mb-4">ملخص الطلب</h4>
+                    
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>إجمالي المنتجات:</span>
+                        <span id="subtotal">0 ريال</span>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>الشحن:</span>
+                        <span id="shipping">0 ريال</span>
+                    </div>
+                    
+
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between mb-4">
+                        <strong>الإجمالي:</strong>
+                        <strong id="total">0 ريال</strong>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="coupon" class="form-label">كود الخصم:</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="coupon" placeholder="أدخل كود الخصم">
+                            <button class="btn btn-outline-secondary" type="button">تطبيق</button>
+                        </div>
+                    </div>
+                    
+                    <button id="checkout-btn" class="btn btn-success w-100 mb-3">متابعة الشراء</button>
+                    <a href="index.html" class="btn btn-outline-primary w-100">متابعة التسوق</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- تذييل الصفحة -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <h5>متجرنا الإلكتروني</h5>
+                    <p>متجر إلكتروني شامل يوفر مجموعة واسعة من المنتجات بأفضل الأسعار وجودة عالية.</p>
+                    <div class="social-links">
+                        <a href="#" class="text-white me-2"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white me-2"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white me-2"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <h5>روابط سريعة</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-white">الرئيسية</a></li>
+                        <li><a href="products/all.html" class="text-white">المنتجات</a></li>
+                        <li><a href="about.html" class="text-white">من نحن</a></li>
+                        <li><a href="contact.html" class="text-white">اتصل بنا</a></li>
+                        <li><a href="faq.html" class="text-white">الأسئلة الشائعة</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <h5>خدمة العملاء</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="account/orders.html" class="text-white">تتبع الطلبات</a></li>
+                        <li><a href="shipping.html" class="text-white">سياسة الشحن</a></li>
+                        <li><a href="returns.html" class="text-white">سياسة الإرجاع</a></li>
+                        <li><a href="privacy.html" class="text-white">سياسة الخصوصية</a></li>
+                        <li><a href="terms.html" class="text-white">شروط الاستخدام</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <h5>اتصل بنا</h5>
+                    <address>
+                        <p><i class="fas fa-map-marker-alt me-2"></i> شارع الرياض، المملكة العربية السعودية</p>
+                        <p><i class="fas fa-phone-alt me-2"></i> +966 12 345 6789</p>
+                        <p><i class="fas fa-envelope me-2"></i> info@store.com</p>
+                    </address>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-md-0">© 2023 متجرنا الإلكتروني. جميع الحقوق محفوظة.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <img src="images/payment-methods.svg" alt="طرق الدفع" class="payment-methods">
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- زر العودة للأعلى -->
+    <button id="backToTop" class="btn btn-primary back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- مكتبات JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/cart.js"></script>
+    
+    <!-- سكريبت خاص بصفحة سلة التسوق -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // عرض محتويات السلة
+            renderCart();
+            
+            // إضافة معالج حدث لزر متابعة الشراء
+            document.getElementById('checkout-btn').addEventListener('click', function() {
+                // التحقق من وجود منتجات في السلة
+                var cart = getCart();
+                if (cart.length === 0) {
+                    alert('سلة التسوق فارغة. يرجى إضافة منتجات قبل متابعة الشراء.');
+                    return;
+                }
+                
+                // الانتقال إلى صفحة إتمام الشراء
+                window.location.href = 'checkout.html';
+            });
+        });
+        
+        /**
+         * عرض محتويات سلة التسوق
+         */
+        function renderCart() {
+            var cart = getCart();
+            var cartItemsContainer = document.getElementById('cart-items');
+            var emptyCartContainer = document.getElementById('empty-cart');
+            
+            // إذا كانت السلة فارغة، عرض رسالة السلة الفارغة
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '';
+                emptyCartContainer.classList.remove('d-none');
+                updateCartSummary(0, 0, 0);
+                return;
+            }
+            
+            // إخفاء رسالة السلة الفارغة
+            emptyCartContainer.classList.add('d-none');
+            
+            // إنشاء HTML لعناصر السلة
+            var html = '';
+            var subtotal = 0;
+            
+            cart.forEach(function(item) {
+                var itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+                
+                html += `
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-2 col-4">
+                                    <div class="cart-item-img" style="background-color: #f1c40f;"></div>
+                                </div>
+                                <div class="col-md-4 col-8">
+                                    <h5 class="card-title">${item.name}</h5>
+                                    <p class="card-text text-muted">السعر: ${item.price} د.ع</p>
+                                </div>
+                                <div class="col-md-3 col-6 mt-3 mt-md-0">
+                                    <div class="quantity-control">
+                                        <button class="btn btn-sm btn-outline-secondary decrease-quantity" data-id="${item.id}">-</button>
+                                        <input type="number" class="form-control mx-2 item-quantity" value="${item.quantity}" min="1" data-id="${item.id}">
+                                        <button class="btn btn-sm btn-outline-secondary increase-quantity" data-id="${item.id}">+</button>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-6 mt-3 mt-md-0 text-end text-md-center">
+                                    <span class="fw-bold">${itemTotal} د.ع</span>
+                                </div>
+                                <div class="col-md-1 col-12 mt-3 mt-md-0 text-end">
+                                    <button class="btn btn-sm btn-danger remove-item" data-id="${item.id}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // إضافة HTML إلى الحاوية
+            cartItemsContainer.innerHTML = html;
+            
+            // حساب الشحن والضريبة والإجمالي
+            var shipping = subtotal > 0 ? 50 : 0; // رسوم الشحن 50 ريال إذا كانت هناك منتجات
+            var tax = subtotal * 0.15; // ضريبة القيمة المضافة 15%
+            var total = subtotal + shipping + tax;
+            
+            // تحديث ملخص السلة
+            updateCartSummary(subtotal, shipping, tax, total);
+            
+            // إضافة معالجات الأحداث لأزرار الكمية وإزالة العناصر
+            addCartItemEventListeners();
+        }
+        
+        /**
+         * تحديث ملخص السلة
+         */
+        function updateCartSummary(subtotal, shipping, tax, total) {
+            document.getElementById('subtotal').textContent = subtotal.toFixed(2) + ' ريال';
+            document.getElementById('shipping').textContent = shipping.toFixed(2) + ' ريال';
+            document.getElementById('tax').textContent = tax.toFixed(2) + ' ريال';
+            document.getElementById('total').textContent = total.toFixed(2) + ' ريال';
+        }
+        
+        /**
+         * إضافة معالجات الأحداث لعناصر السلة
+         */
+        function addCartItemEventListeners() {
+            // أزرار إزالة العناصر
+            var removeButtons = document.querySelectorAll('.remove-item');
+            removeButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var productId = this.getAttribute('data-id');
+                    removeFromCart(productId);
+                });
+            });
+            
+            // أزرار زيادة الكمية
+            var increaseButtons = document.querySelectorAll('.increase-quantity');
+            increaseButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var productId = this.getAttribute('data-id');
+                    var input = document.querySelector(`.item-quantity[data-id="${productId}"]`);
+                    var newQuantity = parseInt(input.value) + 1;
+                    input.value = newQuantity;
+                    updateCartItemQuantity(productId, newQuantity);
+                });
+            });
+            
+            // أزرار تقليل الكمية
+            var decreaseButtons = document.querySelectorAll('.decrease-quantity');
+            decreaseButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var productId = this.getAttribute('data-id');
+                    var input = document.querySelector(`.item-quantity[data-id="${productId}"]`);
+                    var newQuantity = parseInt(input.value) - 1;
+                    if (newQuantity >= 1) {
+                        input.value = newQuantity;
+                        updateCartItemQuantity(productId, newQuantity);
+                    }
+                });
+            });
+            
+            // حقول إدخال الكمية
+            var quantityInputs = document.querySelectorAll('.item-quantity');
+            quantityInputs.forEach(function(input) {
+                input.addEventListener('change', function() {
+                    var productId = this.getAttribute('data-id');
+                    var newQuantity = parseInt(this.value);
+                    if (newQuantity >= 1) {
+                        updateCartItemQuantity(productId, newQuantity);
+                    } else {
+                        this.value = 1;
+                        updateCartItemQuantity(productId, 1);
+                    }
+                });
+            });
+        }
+    </script>
+</body>
+</html>

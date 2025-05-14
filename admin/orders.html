@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الطلبات | لوحة التحكم</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <!-- شريط التنقل العلوي -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="dashboard.html">لوحة التحكم</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="dashboard.html">
+                            <i class="fas fa-tachometer-alt me-1"></i> الرئيسية
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="products.html">
+                            <i class="fas fa-box me-1"></i> المنتجات
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="orders.html">
+                            <i class="fas fa-shopping-cart me-1"></i> الطلبات
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="customers.html">
+                            <i class="fas fa-users me-1"></i> العملاء
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="categories.html">
+                            <i class="fas fa-tags me-1"></i> الأقسام
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="reports.html">
+                            <i class="fas fa-chart-bar me-1"></i> التقارير
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="settings.html">
+                            <i class="fas fa-cog me-1"></i> الإعدادات
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <button class="theme-toggle" onclick="toggleDarkMode()" title="تبديل الوضع الداكن">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i> المسؤول
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="profile.html"><i class="fas fa-user me-1"></i> الملف الشخصي</a></li>
+                            <li><a class="dropdown-item" href="settings.html"><i class="fas fa-cog me-1"></i> الإعدادات</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-1"></i> تسجيل الخروج</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- المحتوى الرئيسي -->
+    <div class="container py-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">إدارة الطلبات</h2>
+            <div class="btn-group">
+                <button class="btn btn-outline-primary" onclick="refreshOrders()">
+                    <i class="fas fa-sync-alt me-1"></i> تحديث
+                </button>
+                <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="fas fa-download me-1"></i> تصدير
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="#" onclick="exportData('ordersTable', 'csv')"><i class="fas fa-file-csv me-1"></i> تصدير CSV</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="exportData('ordersTable', 'print')"><i class="fas fa-print me-1"></i> طباعة</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- أدوات البحث والتصفية -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            <input type="text" class="form-control" placeholder="بحث في الطلبات..." oninput="searchTable(this, 'ordersTable')">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" onchange="filterOrders(this.value)">
+                            <option value="">جميع الحالات</option>
+                            <option value="pending">قيد الانتظار</option>
+                            <option value="processing">قيد المعالجة</option>
+                            <option value="shipped">تم الشحن</option>
+                            <option value="delivered">تم التوصيل</option>
+                            <option value="cancelled">ملغي</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="date" class="form-control" onchange="filterByDate(this.value)">
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-outline-secondary w-100" onclick="resetFilters()">
+                            <i class="fas fa-times me-1"></i> إعادة تعيين
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- جدول الطلبات -->
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="ordersTable">
+                        <thead>
+                            <tr>
+                                <th>رقم الطلب</th>
+                                <th>العميل</th>
+                                <th>المنتجات</th>
+                                <th>المبلغ</th>
+                                <th>تاريخ الطلب</th>
+                                <th>حالة الطلب</th>
+                                <th>طريقة الدفع</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="order-1">
+                                <td>#12345</td>
+                                <td>أحمد محمد</td>
+                                <td>
+                                    <button class="btn btn-sm btn-link" onclick="viewOrderDetails(1)">
+                                        3 منتجات
+                                    </button>
+                                </td>
+                                <td>750 ر.س</td>
+                                <td>2023/12/15</td>
+                                <td>
+                                    <select class="form-select form-select-sm" onchange="updateOrderStatus(1, this.value)">
+                                        <option value="pending">قيد الانتظار</option>
+                                        <option value="processing" selected>قيد المعالجة</option>
+                                        <option value="shipped">تم الشحن</option>
+                                        <option value="delivered">تم التوصيل</option>
+                                        <option value="cancelled">ملغي</option>
+                                    </select>
+                                </td>
+                                <td>بطاقة ائتمان</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-primary" onclick="viewOrderDetails(1)" title="عرض التفاصيل">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-success" onclick="printInvoice(1)" title="طباعة الفاتورة">
+                                            <i class="fas fa-print"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" onclick="cancelOrder(1)" title="إلغاء الطلب">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr id="order-2">
+                                <td>#12344</td>
+                                <td>سارة أحمد</td>
+                                <td>
+                                    <button class="btn btn-sm btn-link" onclick="viewOrderDetails(2)">
+                                        1 منتج
+                                    </button>
+                                </td>
+                                <td>250,000 د.ع</td>
+                                <td>2023/12/15</td>
+                                <td>
+                                    <select class="form-select form-select-sm" onchange="updateOrderStatus(2, this.value)">
+                                        <option value="pending">قيد الانتظار</option>
+                                        <option value="processing">قيد المعالجة</option>
+                                        <option value="shipped" selected>تم الشحن</option>
+                                        <option value="delivered">تم التوصيل</option>
+                                        <option value="cancelled">ملغي</option>
+                                    </select>
+                                </td>
+                                <td>الدفع عند الاستلام</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-primary" onclick="viewOrderDetails(2)" title="عرض التفاصيل">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-success" onclick="printInvoice(2)" title="طباعة الفاتورة">
+                                            <i class="fas fa-print"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" onclick="cancelOrder(2)" title="إلغاء الطلب">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr id="order-3">
+                                <td>#12343</td>
+                                <td>محمد علي</td>
+                                <td>
+                                    <button class="btn btn-sm btn-link" onclick="viewOrderDetails(3)">
+                                        2 منتجات
+                                    </button>
+                                </td>
+                                <td>500 ر.س</td>
+                                <td>2023/12/14</td>
+                                <td>
+                                    <select class="form-select form-select-sm" onchange="updateOrderStatus(3, this.value)">
+                                        <option value="pending">قيد الانتظار</option>
+                                        <option value="processing">قيد المعالجة</option>
+                                        <option value="shipped">تم الشحن</option>
+                                        <option value="delivered" selected>تم التوصيل</option>
+                                        <option value="cancelled">ملغي</option>
+                                    </select>
+                                </td>
+                                <td>محفظة إلكترونية</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-primary" onclick="viewOrderDetails(3)" title="عرض التفاصيل">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-success" onclick="printInvoice(3)" title="طباعة الفاتورة">
+                                            <i class="fas fa-print"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" onclick="cancelOrder(3)" title="إلغاء الطلب">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة تفاصيل الطلب -->
+    <div class="modal fade" id="orderDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">تفاصيل الطلب #<span id="orderNumber"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-4">
+                        <!-- معلومات العميل -->
+                        <div class="col-md-6">
+                            <h6>معلومات العميل</h6>
+                            <div class="card">
+                                <div class="card-body">
+                                    <p class="mb-1"><strong>الاسم:</strong> <span id="customerName"></span></p>
+                                    <p class="mb-1"><strong>البريد الإلكتروني:</strong> <span id="customerEmail"></span></p>
+                                    <p class="mb-1"><strong>رقم الهاتف:</strong> <span id="customerPhone"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- معلومات الشحن -->
+                        <div class="col-md-6">
+                            <h6>معلومات الشحن</h6>
+                            <div class="card">
+                                <div class="card-body">
+                                    <p class="mb-1"><strong>العنوان:</strong> <span id="shippingAddress"></span></p>
+                                    <p class="mb-1"><strong>المدينة:</strong> <span id="shippingCity"></span></p>
+                                    <p class="mb-1"><strong>الرمز البريدي:</strong> <span id="shippingZip"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- تفاصيل المنتجات -->
+                        <div class="col-12">
+                            <h6>المنتجات</h6>
+                            <div class="table-responsive">
+                                <table class="table" id="orderProductsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>المنتج</th>
+                                            <th>الكمية</th>
+                                            <th>السعر</th>
+                                            <th>المجموع</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="3" class="text-end"><strong>المجموع الفرعي:</strong></td>
+                                            <td id="subtotal"></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="3" class="text-end"><strong>الشحن:</strong></td>
+                                            <td id="shipping"></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="3" class="text-end"><strong>الضريبة:</strong></td>
+                                            <td id="tax"></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="3" class="text-end"><strong>المجموع الكلي:</strong></td>
+                                            <td id="total"></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                    <button type="button" class="btn btn-success" onclick="printInvoice(currentOrderId)">
+                        <i class="fas fa-print me-1"></i> طباعة الفاتورة
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- مكتبات JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="js/admin.js"></script>
+
+    <!-- سكريبت خاص بصفحة الطلبات -->
+    <script>
+        let currentOrderId = null;
+
+        // دالة تحديث حالة الطلب
+        function updateOrderStatus(orderId, status) {
+            // في التطبيق الحقيقي، سيتم إرسال الحالة الجديدة إلى الخادم
+            addNotification('success', `تم تحديث حالة الطلب #${orderId} إلى ${status}`);
+        }
+
+        // دالة عرض تفاصيل الطلب
+        function viewOrderDetails(orderId) {
+            currentOrderId = orderId;
+            // في التطبيق الحقيقي، سيتم جلب تفاصيل الطلب من الخادم
+            // هذا مجرد مثال للمحاكاة
+            const orderDetails = {
+                orderNumber: orderId,
+                customer: {
+                    name: 'أحمد محمد',
+                    email: 'ahmed@example.com',
+                    phone: '0501234567'
+                },
+                shipping: {
+                    address: 'شارع الملك فهد',
+                    city: 'الرياض',
+                    zip: '12345'
+                },
+                products: [
+                    { name: 'هاتف ذكي', quantity: 1, price: 2499000, total: 2499000 },
+            { name: 'سماعات لاسلكية', quantity: 2, price: 399000, total: 798000 }
+                ],
+                subtotal: 3297,
+                shipping: 50,
+                tax: 494.55,
+                total: 3841.55
+            };
+
+            // تعبئة البيانات في النافذة المنبثقة
+            document.getElementById('orderNumber').textContent = orderDetails.orderNumber;
+            document.getElementById('customerName').textContent = orderDetails.customer.name;
+            document.getElementById('customerEmail').textContent = orderDetails.customer.email;
+            document.getElementById('customerPhone').textContent = orderDetails.customer.phone;
+            document.getElementById('shippingAddress').textContent = orderDetails.shipping.address;
+            document.getElementById('shippingCity').textContent = orderDetails.shipping.city;
+            document.getElementById('shippingZip').textContent = orderDetails.shipping.zip;
+
+            // تعبئة جدول المنتجات
+            const tbody = document.querySelector('#orderProductsTable tbody');
+            tbody.innerHTML = '';
+            orderDetails.products.forEach(product => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${product.name}</td>
+                        <td>${product.quantity}</td>
+                        <td>${product.price} د.ع</td>
+                <td>${product.total} د.ع</td>
+                    </tr>
+                `;
+            });
+
+            // تعبئة المجاميع
+            document.getElementById('subtotal').textContent = orderDetails.subtotal + ' ر.س';
+            document.getElementById('shipping').textContent = orderDetails.shipping + ' ر.س';
+            document.getElementById('tax').textContent = orderDetails.tax + ' ر.س';
+            document.getElementById('total').textContent = orderDetails.total + ' ر.س';
+
+            // عرض النافذة المنبثقة
+            const modal = new bootstrap.Modal(document.getElementById('orderDetailsModal'));
+            modal.show();
+        }
+
+        // دالة طباعة الفاتورة
+        function printInvoice(orderId) {
+            // في التطبيق الحقيقي، سيتم إنشاء نسخة PDF من الفاتورة
+            alert(`طباعة فاتورة الطلب رقم ${orderId}`);
+        }
+
+        // دالة إلغاء الطلب
+        function cancelOrder(orderId) {
+            if (confirm('هل أنت متأكد من إلغاء هذا الطلب؟')) {
+                // في التطبيق الحقيقي، سيتم إرسال طلب إلغاء إلى الخادم
+                const orderRow = document.querySelector(`#order-${orderId}`);
+                if (orderRow) {
+                    const statusSelect = orderRow.querySelector('select');
+                    statusSelect.value = 'cancelled';
+                    addNotification('warning', `تم إلغاء الطلب #${orderId}`);
+                }
+            }
+        }
+
+        // دالة تصفية الطلبات حسب الحالة
+        function filterOrders(status) {
+            const rows = document.querySelectorAll('#ordersTable tbody tr');
+            rows.forEach(row => {
+                const statusSelect = row.querySelector('select');
+                row.style.display = !status || statusSelect.value === status ? '' : 'none';
+            });
+        }
+
+        // دالة تصفية الطلبات حسب التاريخ
+        function filterByDate(date) {
+            const rows = document.querySelectorAll('#ordersTable tbody tr');
+            rows.forEach(row => {
+                const orderDate = row.cells[4].textContent;
+                row.style.display = !date || orderDate === date ? '' : 'none';
+            });
+        }
+
+        // دالة إعادة تعيين التصفية
+        function resetFilters() {
+            document.querySelector('input[type="text"]').value = '';
+            document.querySelector('select').value = '';
+            document.querySelector('input[type="date"]').value = '';
+            const rows = document.querySelectorAll('#ordersTable tbody tr');
+            rows.forEach(row => row.style.display = '');
+        }
+
+        // دالة تحديث الطلبات
+        function refreshOrders() {
+            // في التطبيق الحقيقي، سيتم جلب البيانات المحدثة من الخادم
+            addNotification('success', 'تم تحديث قائمة الطلبات');
+        }
+    </script>
+</body>
+</html>

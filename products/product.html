@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفاصيل المنتج | متجر إلكتروني</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        /* أنماط الوضع الداكن */
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
+        
+        body.dark-mode .navbar {
+            background-color: #000000 !important;
+        }
+        
+        body.dark-mode .card,
+        body.dark-mode .product-main-image,
+        body.dark-mode .product-thumbnail {
+            background-color: #2d2d2d;
+            border-color: #404040;
+        }
+        
+        body.dark-mode .card-body,
+        body.dark-mode .card-footer {
+            background-color: #2d2d2d;
+            color: #ffffff;
+        }
+        
+        body.dark-mode .table {
+            color: #ffffff;
+        }
+        
+        body.dark-mode .text-muted {
+            color: #b0b0b0 !important;
+        }
+        
+        body.dark-mode .btn-outline-secondary {
+            color: #ffffff;
+            border-color: #404040;
+        }
+        
+        body.dark-mode .btn-outline-secondary:hover {
+            background-color: #404040;
+        }
+        
+        /* أنماط زر تبديل الوضع */
+        .theme-toggle {
+            padding: 0.5rem 1rem;
+            margin-left: 1rem;
+            border: none;
+            background: transparent;
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+        
+        .theme-toggle i {
+            font-size: 1.2rem;
+        }
+        .product-gallery {
+            margin-bottom: 30px;
+        }
+        
+        .product-main-image {
+            width: 100%;
+            height: 400px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .product-thumbnails {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .product-thumbnail {
+            width: 80px;
+            height: 80px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .product-thumbnail:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .product-info h1 {
+            margin-bottom: 20px;
+        }
+        
+        .product-rating {
+            margin-bottom: 20px;
+        }
+        
+        .product-price {
+            font-size: 2rem;
+            color: #2ecc71;
+            margin-bottom: 20px;
+        }
+        
+        .old-price {
+            text-decoration: line-through;
+            color: #95a5a6;
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+        
+        .product-stock {
+            margin-bottom: 20px;
+        }
+        
+        .product-description {
+            margin-bottom: 30px;
+        }
+        
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .quantity-control button {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .quantity-control input {
+            width: 60px;
+            height: 40px;
+            text-align: center;
+            margin: 0 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+        }
+        
+        .product-actions {
+            margin-bottom: 30px;
+        }
+        
+        .product-specs {
+            margin-bottom: 30px;
+        }
+        
+        .review-item {
+            border-bottom: 1px solid #dee2e6;
+            padding: 20px 0;
+        }
+        
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .review-rating {
+            color: #f1c40f;
+        }
+    </style>
+</head>
+<body>
+    <!-- شريط التنقل العلوي -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="../index.html">متجرنا الإلكتروني</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../index.html">الرئيسية</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            الأقسام
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="category.html?id=1">إلكترونيات</a></li>
+                            <li><a class="dropdown-item" href="category.html?id=2">ملابس</a></li>
+                            <li><a class="dropdown-item" href="category.html?id=3">أثاث منزلي</a></li>
+                            <li><a class="dropdown-item" href="category.html?id=4">مستلزمات رياضية</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="all.html">جميع المنتجات</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../contact.html">اتصل بنا</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <button class="theme-toggle" onclick="toggleDarkMode()" title="تبديل الوضع الداكن">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <a href="../cart.html" class="btn btn-outline-light me-2">
+                        <i class="fas fa-shopping-cart"></i> سلة التسوق <span class="badge bg-danger cart-count">0</span>
+                    </a>
+                    <a href="../login.html" class="btn btn-outline-light me-2">
+                        <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+                    </a>
+                    <a href="../register.html" class="btn btn-light">
+                        <i class="fas fa-user-plus"></i> إنشاء حساب
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- محتوى صفحة المنتج -->
+    <div class="container py-5">
+        <div class="row">
+            <!-- معرض الصور -->
+            <div class="col-lg-6">
+                <div class="product-gallery">
+                    <div class="product-main-image">
+                        <i class="fas fa-image fa-4x text-muted"></i>
+                    </div>
+                    <div class="product-thumbnails">
+                        <div class="product-thumbnail"></div>
+                        <div class="product-thumbnail"></div>
+                        <div class="product-thumbnail"></div>
+                        <div class="product-thumbnail"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- معلومات المنتج -->
+            <div class="col-lg-6">
+                <div class="product-info">
+                    <h1>هاتف ذكي XYZ</h1>
+                    
+                    <div class="product-rating">
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star-half-alt text-warning"></i>
+                        <span class="ms-2">(4.5)</span>
+                        <span class="text-muted">| 120 تقييم</span>
+                    </div>
+                    
+                    <div class="product-price">
+                        <span class="current-price">1,200,000 د.ع</span>
+                    <span class="old-price">1,500,000 د.ع</span>
+                        <span class="badge bg-danger">خصم 20%</span>
+                    </div>
+                    
+                    <div class="product-stock text-success">
+                        <i class="fas fa-check-circle"></i> متوفر في المخزون
+                    </div>
+                    
+                    <div class="product-description">
+                        <h5>الوصف</h5>
+                        <p>هاتف ذكي متطور يجمع بين الأداء القوي والتصميم الأنيق. يأتي مع كاميرا عالية الدقة، وبطارية تدوم طويلاً، وشاشة عرض مذهلة.</p>
+                    </div>
+                    
+                    <div class="quantity-control">
+                        <button class="btn btn-outline-secondary" onclick="decrementQuantity()">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <input type="number" id="quantity" value="1" min="1" max="10">
+                        <button class="btn btn-outline-secondary" onclick="incrementQuantity()">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="product-actions">
+                        <button class="btn btn-primary btn-lg me-2 add-to-cart" data-id="1" onclick="checkLoginBeforeAction(event, addToCart.bind(null, '1'))">
+                            <i class="fas fa-cart-plus"></i> أضف إلى السلة
+                        </button>
+                        <button class="btn btn-outline-danger btn-lg" onclick="checkLoginBeforeAction(event, addToFavorites.bind(null, '1'))">
+                            <i class="fas fa-heart"></i> أضف للمفضلة
+                        </button>
+                    </div>
+                    <script>
+                    function checkLoginBeforeAction(event, callback) {
+                        event.preventDefault();
+                        const isLoggedIn = localStorage.getItem('user') !== null;
+                        
+                        if (!isLoggedIn) {
+                            if (!window.alertShown) {
+                                alert('يجب تسجيل الدخول أولاً');
+                                window.alertShown = true;
+                                setTimeout(() => window.alertShown = false, 3000);
+                            }
+                            window.location.href = '../login.html';
+                            return;
+                        }
+                        
+                        callback();
+                    }
+
+                    function addToFavorites(productId) {
+                        // إضافة المنتج إلى المفضلة
+                        alert('تمت إضافة المنتج إلى المفضلة');
+                    }
+                    </script>
+                    
+                    <div class="product-specs">
+                        <h5>المواصفات</h5>
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th>الشاشة</th>
+                                    <td>6.7 بوصة، OLED</td>
+                                </tr>
+                                <tr>
+                                    <th>المعالج</th>
+                                    <td>ثماني النواة، 2.8 جيجاهرتز</td>
+                                </tr>
+                                <tr>
+                                    <th>الذاكرة</th>
+                                    <td>8 جيجابايت رام، 256 جيجابايت تخزين</td>
+                                </tr>
+                                <tr>
+                                    <th>البطارية</th>
+                                    <td>5000 مللي أمبير</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- التقييمات والمراجعات -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="mb-4">التقييمات والمراجعات</h3>
+                
+                <div class="reviews">
+                    <!-- مراجعة 1 -->
+                    <div class="review-item">
+                        <div class="review-header">
+                            <div>
+                                <h6>أحمد محمد</h6>
+                                <small class="text-muted">2023/06/15</small>
+                            </div>
+                            <div class="review-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <p>منتج رائع وجودة ممتازة. البطارية تدوم طويلاً والكاميرا ممتازة.</p>
+                    </div>
+                    
+                    <!-- مراجعة 2 -->
+                    <div class="review-item">
+                        <div class="review-header">
+                            <div>
+                                <h6>سارة عبدالله</h6>
+                                <small class="text-muted">2023/06/10</small>
+                            </div>
+                            <div class="review-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                            </div>
+                        </div>
+                        <p>الهاتف جيد بشكل عام، لكن الشحن يمكن أن يكون أسرع.</p>
+                    </div>
+                </div>
+                
+                <!-- نموذج إضافة تقييم -->
+                <div class="add-review mt-4">
+                    <h5>أضف تقييمك</h5>
+                    <form id="review-form">
+                        <div class="mb-3">
+                            <label class="form-label">التقييم</label>
+                            <div class="rating-stars">
+                                <i class="far fa-star fa-2x text-warning" data-rating="1"></i>
+                                <i class="far fa-star fa-2x text-warning" data-rating="2"></i>
+                                <i class="far fa-star fa-2x text-warning" data-rating="3"></i>
+                                <i class="far fa-star fa-2x text-warning" data-rating="4"></i>
+                                <i class="far fa-star fa-2x text-warning" data-rating="5"></i>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="review-text" class="form-label">تعليقك</label>
+                            <textarea class="form-control" id="review-text" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane me-2"></i> أرسل التقييم
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- منتجات مشابهة -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="mb-4">منتجات مشابهة</h3>
+                
+                <div class="row">
+                    <!-- منتج مشابه 1 -->
+                    <div class="col-md-3 col-sm-6 mb-4">
+                        <div class="card product-card h-100">
+                            <div class="product-image" style="background-color: #3498db;"></div>
+                            <div class="card-body">
+                                <h5 class="card-title">هاتف ذكي ABC</h5>
+                                <div class="product-rating mb-2">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="far fa-star text-warning"></i>
+                                    <span class="ms-1">(4.0)</span>
+                                </div>
+                                <p class="card-text">هاتف ذكي بمواصفات متميزة</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="price">1,100,000 د.ع</span>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent border-top-0 d-flex justify-content-between">
+                                <button class="btn btn-primary btn-sm add-to-cart" data-id="4" onclick="checkLoginBeforeAction(event, addToCart.bind(null, '4'))">
+                                    <i class="fas fa-cart-plus"></i> أضف للسلة
+                                </button>
+                                <button class="btn btn-outline-danger btn-sm" onclick="checkLoginBeforeAction(event, addToFavorites.bind(null, '4'))">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                                <a href="product.html?id=4" class="btn btn-outline-secondary btn-sm">
+                                    <i class="fas fa-eye"></i> التفاصيل
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- منتج مشابه 2 -->
+                    <div class="col-md-3 col-sm-6 mb-4">
+                        <div class="card product-card h-100">
+                            <div class="product-image" style="background-color: #2ecc71;"></div>
+                            <div class="card-body">
+                                <h5 class="card-title">هاتف ذكي DEF</h5>
+                                <div class="product-rating mb-2">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star-half-alt text-warning"></i>
+                                    <span class="ms-1">(4.5)</span>
+                                </div>
+                                <p class="card-text">هاتف ذكي بتصميم أنيق</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="price">1,300,000 د.ع</span>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent border-top-0 d-flex justify-content-between">
+                                <button class="btn btn-primary btn-sm add-to-cart" data-id="5" onclick="checkLoginBeforeAction(event, addToCart.bind(null, '5'))">
+                                    <i class="fas fa-cart-plus"></i> أضف للسلة
+                                </button>
+                                <button class="btn btn-outline-danger btn-sm" onclick="checkLoginBeforeAction(event, addToFavorites.bind(null, '5'))">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                                <a href="product.html?id=5" class="btn btn-outline-secondary btn-sm">
+                                    <i class="fas fa-eye"></i> التفاصيل
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- منتج مشابه 3 -->
+                    <div class="col-md-3 col-sm-6 mb-4">
+                        <div class="card product-card h-100">
+                            <div class="product-image" style="background-color: #e74c3c;"></div>
+                            <div class="card-body">
+                                <h5 class="card-title">هاتف ذكي GHI</h5>
+                                <div class="product-rating mb-2">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="far fa-star text-warning"></i>
+                                    <span class="ms-1">(4.0)</span>
+                                </div>
+                                <p class="card-text">هاتف ذكي بأداء قوي</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="price">1,250,000 د.ع</span>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent border-top-0 d-flex justify-content-between">
+                                <button class="btn btn-primary btn-sm add-to-cart" data-id="6" onclick="checkLoginBeforeAction(event, addToCart.bind(null, '6'))">
+                                    <i class="fas fa-cart-plus"></i> أضف للسلة
+                                </button>
+                                <a href="product.html?id=6" class="btn btn-outline-secondary btn-sm">
+                                    <i class="fas fa-eye"></i> التفاصيل
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- منتج مشابه 4 -->
+                    <div class="col-md-3 col-sm-6 mb-4">
+                        <div class="card product-card h-100">
+                            <div class="product-image" style="background-color: #9b59b6;"></div>
+                            <div class="card-body">
+                                <h5 class="card-title">هاتف ذكي JKL</h5>
+                                <div class="product-rating mb-2">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star-half-alt text-warning"></i>
+                                    <i class="far fa-star text-warning"></i>
+                                    <span class="ms-1">(3.5)</span>
+                                </div>
+                                <p class="card-text">هاتف ذكي اقتصادي</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="price">900,000 د.ع</span>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent border-top-0 d-flex justify-content-between">
+                                <button class="btn btn-primary btn-sm add-to-cart" data-id="7" onclick="checkLoginBeforeAction(event, addToCart.bind(null, '7'))">
+                                    <i class="fas fa-cart-plus"></i> أضف للسلة
+                                </button>
+                                <a href="product.html?id=7" class="btn btn-outline-secondary btn-sm">
+                                    <i class="fas fa-eye"></i> التفاصيل
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- تذييل الصفحة -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <h5>متجرنا الإلكتروني</h5>
+                    <p>متجر إلكتروني شامل يوفر مجموعة واسعة من المنتجات بأفضل الأسعار وجودة عالية.</p>
+                    <div class="social-links">
+                        <a href="#" class="text-white me-2"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white me-2"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white me-2"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <h5>روابط سريعة</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="../index.html" class="text-white">الرئيسية</a></li>
+                        <li><a href="all.html" class="text-white">المنتجات</a></li>
+                        <li><a href="../about.html" class="text-white">من نحن</a></li>
+                        <li><a href="../contact.html" class="text-white">اتصل بنا</a></li>
+                        <li><a href="../faq.html" class="text-white">الأسئلة الشائعة</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <h5>خدمة العملاء</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="../account/orders.html" class="text-white">تتبع الطلبات</a></li>
+                        <li><a href="../shipping.html" class="text-white">سياسة الشحن</a></li>
+                        <li><a href="../returns.html" class="text-white">سياسة الإرجاع</a></li>
+                        <li><a href="../privacy.html" class="text-white">سياسة الخصوصية</a></li>
+                        <li><a href="../terms.html" class="text-white">شروط الاستخدام</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <h5>اتصل بنا</h5>
+                    <address>
+                        <p><i class="fas fa-map-marker-alt me-2"></i> شارع الرياض، المملكة العربية السعودية</p>
+                        <p><i class="fas fa-phone-alt me-2"></i> +966 12 345 6789</p>
+                        <p><i class="fas fa-envelope me-2"></i> info@store.com</p>
+                    </address>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-md-0">© 2023 متجرنا الإلكتروني. جميع الحقوق محفوظة.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <img src="../images/payment-methods.svg" alt="طرق الدفع" class="payment-methods">
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- زر العودة للأعلى -->
+    <button id="backToTop" class="btn btn-primary back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- مكتبات JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/cart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initCart();
+        });
+    </script>
+    
+    <!-- سكريبت الوضع الداكن -->
+    <script>
+        // التحقق من حالة الوضع الداكن المحفوظة
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            document.body.classList.add('dark-mode');
+            updateThemeIcon();
+        }
+        
+        // تبديل الوضع الداكن
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            
+            // حفظ الحالة في localStorage
+            if (document.body.classList.contains('dark-mode')) {
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                localStorage.setItem('darkMode', 'disabled');
+            }
+            
+            updateThemeIcon();
+        }
+        
+        // تحديث أيقونة الوضع
+        function updateThemeIcon() {
+            const icon = document.querySelector('.theme-toggle i');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        }
+    </script>
+    
+    <!-- سكريبت خاص بصفحة المنتج -->
+    <script>
+        // التحكم في الكمية
+        function incrementQuantity() {
+            var input = document.getElementById('quantity');
+            var value = parseInt(input.value);
+            if (value < 10) {
+                input.value = value + 1;
+            }
+        }
+        
+        function decrementQuantity() {
+            var input = document.getElementById('quantity');
+            var value = parseInt(input.value);
+            if (value > 1) {
+                input.value = value - 1;
+            }
+        }
+        
+        // إضافة المنتج للسلة
+        function addToCart(productId) {
+            var quantity = parseInt(document.getElementById('quantity').value);
+            // هنا يمكن إضافة المنتج للسلة مع الكمية المحددة
+            alert('تمت إضافة المنتج للسلة');
+        }
+        
+        // التحكم في نجوم التقييم
+        document.querySelectorAll('.rating-stars i').forEach(function(star) {
+            star.addEventListener('click', function() {
+                var rating = this.dataset.rating;
+                document.querySelectorAll('.rating-stars i').forEach(function(s, index) {
+                    if (index < rating) {
+                        s.classList.remove('far');
+                        s.classList.add('fas');
+                    } else {
+                        s.classList.remove('fas');
+                        s.classList.add('far');
+                    }
+                });
+            });
+        });
+        
+        // معالجة نموذج التقييم
+        document.getElementById('review-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // هنا يمكن إرسال التقييم للخادم
+            alert('تم إرسال تقييمك بنجاح');
+            this.reset();
+            // إعادة تعيين نجوم التقييم
+            document.querySelectorAll('.rating-stars i').forEach(function(star) {
+                star.classList.remove('fas');
+                star.classList.add('far');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الإعدادات | لوحة التحكم</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <!-- شريط التنقل العلوي -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="dashboard.html">لوحة التحكم</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="dashboard.html">
+                            <i class="fas fa-tachometer-alt me-1"></i> الرئيسية
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="products.html">
+                            <i class="fas fa-box me-1"></i> المنتجات
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="orders.html">
+                            <i class="fas fa-shopping-cart me-1"></i> الطلبات
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="customers.html">
+                            <i class="fas fa-users me-1"></i> العملاء
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="categories.html">
+                            <i class="fas fa-tags me-1"></i> الأقسام
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="reports.html">
+                            <i class="fas fa-chart-bar me-1"></i> التقارير
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="settings.html">
+                            <i class="fas fa-cog me-1"></i> الإعدادات
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <button class="theme-toggle" onclick="toggleDarkMode()" title="تبديل الوضع الداكن">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i> المسؤول
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="profile.html"><i class="fas fa-user me-1"></i> الملف الشخصي</a></li>
+                            <li><a class="dropdown-item" href="settings.html"><i class="fas fa-cog me-1"></i> الإعدادات</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-1"></i> تسجيل الخروج</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- المحتوى الرئيسي -->
+    <div class="container py-4">
+        <h2 class="mb-4">الإعدادات</h2>
+
+        <!-- أقسام الإعدادات -->
+        <div class="row g-4">
+            <!-- إعدادات المتجر -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">إعدادات المتجر</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="storeSettingsForm">
+                            <div class="mb-3">
+                                <label class="form-label">اسم المتجر</label>
+                                <input type="text" class="form-control" value="متجر الإلكترونيات" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">شعار المتجر</label>
+                                <div class="d-flex align-items-center gap-3">
+                                    <img src="../images/logo.png" alt="شعار المتجر" class="img-thumbnail" style="width: 100px;">
+                                    <div class="flex-grow-1">
+                                        <input type="file" class="form-control" accept="image/*">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">وصف المتجر</label>
+                                <textarea class="form-control" rows="3">متجر إلكتروني متخصص في بيع الإلكترونيات والأجهزة الذكية</textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">عنوان المتجر</label>
+                                <input type="text" class="form-control" value="الرياض، المملكة العربية السعودية">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">البريد الإلكتروني للتواصل</label>
+                                <input type="email" class="form-control" value="contact@store.com" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">رقم الهاتف</label>
+                                <input type="tel" class="form-control" value="+966123456789">
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i> حفظ التغييرات
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- إعدادات الشحن والدفع -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">إعدادات الشحن والدفع</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="paymentSettingsForm">
+                            <!-- طرق الدفع -->
+                            <div class="mb-4">
+                                <label class="form-label">طرق الدفع المتاحة</label>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                    <label class="form-check-label">الدفع عند الاستلام</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                    <label class="form-check-label">بطاقة ائتمان</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                    <label class="form-check-label">PayPal</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox">
+                                    <label class="form-check-label">Apple Pay</label>
+                                </div>
+                            </div>
+
+                            <!-- إعدادات الشحن -->
+                            <div class="mb-4">
+                                <label class="form-label">خيارات الشحن</label>
+                                <div class="mb-3">
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" checked>
+                                        <label class="form-check-label">شحن مجاني للطلبات فوق 500 ر.س</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" checked>
+                                        <label class="form-check-label">شحن سريع (يومين عمل)</label>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">تكلفة الشحن الأساسية</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" value="30">
+                                        <span class="input-group-text">ر.س</span>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">تكلفة الشحن السريع</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" value="50">
+                                        <span class="input-group-text">ر.س</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- إعدادات الضريبة -->
+                            <div class="mb-3">
+                                <label class="form-label">نسبة ضريبة القيمة المضافة</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" value="15">
+                                    <span class="input-group-text">%</span>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i> حفظ التغييرات
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- إعدادات الأمان -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">إعدادات الأمان</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="securitySettingsForm">
+                            <!-- تغيير كلمة المرور -->
+                            <div class="mb-4">
+                                <h6 class="mb-3">تغيير كلمة المرور</h6>
+                                <div class="mb-3">
+                                    <label class="form-label">كلمة المرور الحالية</label>
+                                    <input type="password" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">كلمة المرور الجديدة</label>
+                                    <input type="password" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">تأكيد كلمة المرور الجديدة</label>
+                                    <input type="password" class="form-control">
+                                </div>
+                            </div>
+
+                            <!-- المصادقة الثنائية -->
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h6 class="mb-0">المصادقة الثنائية</h6>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" checked>
+                                    </div>
+                                </div>
+                                <p class="text-muted small">تفعيل المصادقة الثنائية يزيد من أمان حسابك</p>
+                            </div>
+
+                            <!-- إشعارات الأمان -->
+                            <div class="mb-4">
+                                <h6 class="mb-3">إشعارات الأمان</h6>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                    <label class="form-check-label">إشعار عند تسجيل الدخول من جهاز جديد</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                    <label class="form-check-label">إشعار عند تغيير كلمة المرور</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                    <label class="form-check-label">إشعار عند تغيير إعدادات الأمان</label>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i> حفظ التغييرات
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- إعدادات الإشعارات -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">إعدادات الإشعارات</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="notificationSettingsForm">
+                            <!-- إشعارات الطلبات -->
+                            <div class="mb-4">
+                                <h6 class="mb-3">إشعارات الطلبات</h6>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                    <label class="form-check-label">طلب جديد</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                    <label class="form-check-label">إلغاء طلب</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                    <label class="form-check-label">تحديث حالة الطلب</label>
+                                </div>
+                            </div>
+
+                            <!-- إشعارات المخزون -->
+                            <div class="mb-4">
+                                <h6 class="mb-3">إشعارات المخزون</h6>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                    <label class="form-check-label">تنبيه انخفاض المخزون</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                    <label class="form-check-label">نفاد المخزون</label>
+                                </div>
+                            </div>
+
+                            <!-- إشعارات التقييمات -->
+                            <div class="mb-4">
+                                <h6 class="mb-3">إشعارات التقييمات</h6>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                    <label class="form-check-label">تقييم جديد</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox">
+                                    <label class="form-check-label">تقييم سلبي</label>
+                                </div>
+                            </div>
+
+                            <!-- طرق الإشعار -->
+                            <div class="mb-4">
+                                <h6 class="mb-3">طرق الإشعار</h6>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                    <label class="form-check-label">البريد الإلكتروني</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                    <label class="form-check-label">إشعارات المتصفح</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox">
+                                    <label class="form-check-label">الرسائل النصية</label>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i> حفظ التغييرات
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- مكتبات JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="js/admin.js"></script>
+
+    <!-- سكريبت خاص بصفحة الإعدادات -->
+    <script>
+        // تهيئة النماذج
+        document.addEventListener('DOMContentLoaded', function() {
+            // نموذج إعدادات المتجر
+            const storeSettingsForm = document.getElementById('storeSettingsForm');
+            storeSettingsForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                // في التطبيق الحقيقي، سيتم إرسال البيانات إلى الخادم
+                alert('تم حفظ إعدادات المتجر بنجاح');
+            });
+
+            // نموذج إعدادات الشحن والدفع
+            const paymentSettingsForm = document.getElementById('paymentSettingsForm');
+            paymentSettingsForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                // في التطبيق الحقيقي، سيتم إرسال البيانات إلى الخادم
+                alert('تم حفظ إعدادات الشحن والدفع بنجاح');
+            });
+
+            // نموذج إعدادات الأمان
+            const securitySettingsForm = document.getElementById('securitySettingsForm');
+            securitySettingsForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                // في التطبيق الحقيقي، سيتم التحقق من كلمة المرور وتحديثها
+                alert('تم حفظ إعدادات الأمان بنجاح');
+            });
+
+            // نموذج إعدادات الإشعارات
+            const notificationSettingsForm = document.getElementById('notificationSettingsForm');
+            notificationSettingsForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                // في التطبيق الحقيقي، سيتم إرسال البيانات إلى الخادم
+                alert('تم حفظ إعدادات الإشعارات بنجاح');
+            });
+        });
+    </script>
+</body>
+</html>
