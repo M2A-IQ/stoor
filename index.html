@@ -430,6 +430,38 @@
     function addToFavorites(productId) {
         alert('تمت إضافة المنتج إلى المفضلة');
     }
+
+    // التحقق من حالة تسجيل الدخول عند تحميل الصفحة
+    window.addEventListener('load', () => {
+        const loginButton = document.getElementById('login-button');
+        const registerButton = document.getElementById('register-button');
+        const logoutButton = document.getElementById('logout-button');
+
+        window.checkAuthState((user) => {
+            if (user) {
+                loginButton.classList.add('d-none');
+                registerButton.classList.add('d-none');
+                logoutButton.classList.remove('d-none');
+            } else {
+                loginButton.classList.remove('d-none');
+                registerButton.classList.remove('d-none');
+                logoutButton.classList.add('d-none');
+            }
+        });
+    });
+
+    // دالة تأكيد تسجيل الخروج
+    function confirmLogout() {
+        if (confirm('هل أنت متأكد من رغبتك في تسجيل الخروج؟')) {
+            window.logoutUser().then(() => {
+                // إعادة تحميل الصفحة بعد تسجيل الخروج
+                window.location.reload();
+            }).catch((error) => {
+                console.error('خطأ في تسجيل الخروج:', error);
+                alert('حدث خطأ أثناء تسجيل الخروج. الرجاء المحاولة مرة أخرى.');
+            });
+        }
+    }
     </script>
 </body>
 </html>
