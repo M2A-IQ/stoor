@@ -20,6 +20,9 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 
 // Export functions to window object
+// قائمة البريد الإلكتروني للمشرفين
+const adminEmails = ['mustafa050908@gmail.com'];
+
 window.createAccount = async (email, password, username) => {
   try {
     const userCredential = await auth.createUserWithEmailAndPassword(email, password);
@@ -30,18 +33,28 @@ window.createAccount = async (email, password, username) => {
       displayName: username
     });
 
+    // التحقق مما إذا كان البريد الإلكتروني في قائمة المشرفين
+    const isAdmin = adminEmails.includes(email);
+
     // حفظ معلومات المستخدم في localStorage
     localStorage.setItem('user', JSON.stringify({
       uid: user.uid,
       email: user.email,
-      displayName: user.displayName // حفظ اسم المستخدم أيضاً
+      displayName: user.displayName,
+      isAdmin: isAdmin
     }));
 
     // حفظ معلومات المستخدم في Firestore
     await db.collection('users').doc(user.uid).set({
       username: username,
-      email: email
+      email: email,
+      isAdmin: isAdmin
     });
+
+    // إذا كان المستخدم مشرفًا، قم بتوجيهه إلى لوحة التحكم
+    if (isAdmin) {
+      window.location.href = 'admin/dashboard.html';
+    }
 
     return userCredential;
   } catch (error) {
@@ -56,20 +69,31 @@ window.loginWithEmailAndPassword = async (email, password) => {
   try {
     const userCredential = await auth.signInWithEmailAndPassword(email, password);
     const user = userCredential.user;
+
+    // التحقق من حالة المشرف في Firestore
+    const userDoc = await db.collection('users').doc(user.uid).get();
+    const userData = userDoc.data();
+    const isAdmin = userData?.isAdmin || adminEmails.includes(user.email);
+
     // حفظ معلومات المستخدم في localStorage
     localStorage.setItem('user', JSON.stringify({
       uid: user.uid,
-      email: user.email
+      email: user.email,
+      displayName: user.displayName,
+      isAdmin: isAdmin
     }));
 
-    // حفظ معلومات المستخدم في Firestore
-    // ملاحظة: عادة يتم حفظ بيانات المستخدم عند الإنشاء، ولكن سنقوم بتحديثها هنا أيضاً للمزامنة
+    // تحديث معلومات المستخدم في Firestore
     await db.collection('users').doc(user.uid).set({
-      // يجب الحصول على اسم المستخدم من مكان ما عند تسجيل الدخول بالبريد الإلكتروني إذا لم يكن متاحاً مباشرة
-      // حالياً، سنفترض أنه يمكن الحصول عليه من user.displayName بعد التحديث الأول عند الإنشاء
       username: user.displayName || 'N/A',
-      email: user.email
-    }, { merge: true }); // استخدم merge: true لتجنب الكتابة فوق الحقول الأخرى إذا كانت موجودة
+      email: user.email,
+      isAdmin: isAdmin
+    }, { merge: true });
+
+    // توجيه المشرف إلى لوحة التحكم
+    if (isAdmin) {
+      window.location.href = 'admin/dashboard.html';
+    }
 
     return userCredential;
   } catch (error) {
@@ -88,20 +112,31 @@ window.signInWithGoogle = async () => {
     });
     const result = await auth.signInWithPopup(provider);
     const user = result.user;
+
+    // التحقق مما إذا كان البريد الإلكتروني في قائمة المشرفين
+    const isAdmin = adminEmails.includes(user.email);
+
     // حفظ معلومات المستخدم في localStorage
     localStorage.setItem('user', JSON.stringify({
       uid: user.uid,
       email: user.email,
       displayName: user.displayName,
-      photoURL: user.photoURL
+      photoURL: user.photoURL,
+      isAdmin: isAdmin
     }));
 
     // حفظ معلومات المستخدم في Firestore
     await db.collection('users').doc(user.uid).set({
       username: user.displayName,
       email: user.email,
-      photoURL: user.photoURL
-    }, { merge: true }); // استخدم merge: true لتجنب الكتابة فوق الحقول الأخرى إذا كانت موجودة
+      photoURL: user.photoURL,
+      isAdmin: isAdmin
+    }, { merge: true });
+
+    // توجيه المشرف إلى لوحة التحكم
+    if (isAdmin) {
+      window.location.href = 'admin/dashboard.html';
+    }
 
     return result;
   } catch (error) {
@@ -127,20 +162,39 @@ window.logoutUser = async () => {
 
 
 window.checkAuthState = (callback) => {
-  return auth.onAuthStateChanged((user) => {
-    console.log('Authentication state changed. User:', user); // Add this line
+  return auth.onAuthStateChanged(async (user) => {
+    console.log('Authentication state changed. User:', user);
     if (user) {
+      // التحقق من حالة المشرف
+      let isAdmin = false;
+      try {
+        const userDoc = await db.collection('users').doc(user.uid).get();
+        const userData = userDoc.data();
+        isAdmin = userData?.isAdmin || adminEmails.includes(user.email);
+      } catch (error) {
+        console.error('Error checking admin status:', error);
+        isAdmin = adminEmails.includes(user.email);
+      }
+
       // تحديث معلومات المستخدم في localStorage
       localStorage.setItem('user', JSON.stringify({
         uid: user.uid,
         email: user.email,
         displayName: user.displayName,
+        isAdmin: isAdmin
       }));
-        console.log('User logged in. Display Name:', user.displayName); // Add this line
+      console.log('User logged in. Display Name:', user.displayName, 'Is Admin:', isAdmin);
+
+      // تحديث معلومات المستخدم في Firestore
+      await db.collection('users').doc(user.uid).set({
+        email: user.email,
+        displayName: user.displayName,
+        isAdmin: isAdmin
+      }, { merge: true });
     } else {
       // مسح معلومات المستخدم من localStorage عند تسجيل الخروج
       localStorage.removeItem('user');
-      console.log('User logged out.'); // Add this line
+      console.log('User logged out.');
     }
     callback(user);
   });
