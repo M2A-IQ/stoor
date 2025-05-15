@@ -32,8 +32,10 @@ const googleProvider = new GoogleAuthProvider();
 // دالة إنشاء حساب جديد
 export const createAccount = async (email, password) => {
     try {
+        console.log('محاولة إنشاء حساب جديد في Firebase...');
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
+        console.log('تم إنشاء الحساب في Firebase بنجاح');
 
         // تخزين معلومات المستخدم في localStorage
         localStorage.setItem('user', JSON.stringify({
@@ -45,11 +47,17 @@ export const createAccount = async (email, password) => {
             lastLogin: new Date().toISOString()
         }));
 
+        console.log('تم إنشاء الحساب بنجاح، جاري إعادة التوجيه...');
         alert('تم إنشاء الحساب بنجاح');
-        window.location.href = '/index.html';
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 1000);
         return user;
     } catch (error) {
         console.error('خطأ في إنشاء الحساب:', error);
+        console.error('رمز الخطأ:', error.code);
+        console.error('رسالة الخطأ:', error.message);
+        
         let errorMessage = 'حدث خطأ في إنشاء الحساب';
         if (error.code === 'auth/email-already-in-use') {
             errorMessage = 'البريد الإلكتروني مستخدم بالفعل';
@@ -57,7 +65,13 @@ export const createAccount = async (email, password) => {
             errorMessage = 'كلمة المرور ضعيفة جداً';
         } else if (error.code === 'auth/invalid-email') {
             errorMessage = 'البريد الإلكتروني غير صالح';
+        } else if (error.code === 'auth/network-request-failed') {
+            errorMessage = 'فشل الاتصال بالخادم. يرجى التحقق من اتصال الإنترنت';
+        } else if (error.code === 'auth/too-many-requests') {
+            errorMessage = 'تم تجاوز عدد المحاولات المسموح بها. يرجى المحاولة لاحقاً';
         }
+        
+        console.error('رسالة الخطأ للمستخدم:', errorMessage);
         alert(errorMessage);
         throw error;
     }
@@ -66,8 +80,10 @@ export const createAccount = async (email, password) => {
 // دالة تسجيل الدخول
 export const loginWithEmailAndPassword = async (email, password) => {
     try {
+        console.log('محاولة تسجيل الدخول في Firebase...');
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
+        console.log('تم تسجيل الدخول في Firebase بنجاح');
 
         // التحقق من البريد الإلكتروني للمسؤول
         const isAdmin = user.email === 'admin@stor.com';
@@ -82,18 +98,24 @@ export const loginWithEmailAndPassword = async (email, password) => {
             lastLogin: new Date().toISOString()
         }));
 
+        console.log('تم تسجيل الدخول بنجاح، جاري إعادة التوجيه...');
         alert('تم تسجيل الدخول بنجاح');
 
-        // إعادة توجيه المستخدم حسب صلاحياته
-        if (isAdmin) {
-            window.location.href = '/admin/dashboard.html';
-        } else {
-            window.location.href = '/index.html';
-        }
+        // إعادة توجيه المستخدم حسب صلاحياته بعد تأخير قصير
+        setTimeout(() => {
+            if (isAdmin) {
+                window.location.href = 'admin/dashboard.html';
+            } else {
+                window.location.href = 'index.html';
+            }
+        }, 1000);
 
         return user;
     } catch (error) {
         console.error('خطأ في تسجيل الدخول:', error);
+        console.error('رمز الخطأ:', error.code);
+        console.error('رسالة الخطأ:', error.message);
+        
         let errorMessage = 'حدث خطأ في تسجيل الدخول';
         if (error.code === 'auth/user-not-found') {
             errorMessage = 'البريد الإلكتروني غير مسجل';
@@ -101,7 +123,15 @@ export const loginWithEmailAndPassword = async (email, password) => {
             errorMessage = 'كلمة المرور غير صحيحة';
         } else if (error.code === 'auth/invalid-email') {
             errorMessage = 'البريد الإلكتروني غير صالح';
+        } else if (error.code === 'auth/network-request-failed') {
+            errorMessage = 'فشل الاتصال بالخادم. يرجى التحقق من اتصال الإنترنت';
+        } else if (error.code === 'auth/too-many-requests') {
+            errorMessage = 'تم تجاوز عدد المحاولات المسموح بها. يرجى المحاولة لاحقاً';
+        } else if (error.code === 'auth/user-disabled') {
+            errorMessage = 'تم تعطيل هذا الحساب';
         }
+        
+        console.error('رسالة الخطأ للمستخدم:', errorMessage);
         alert(errorMessage);
         throw error;
     }
@@ -128,9 +158,9 @@ export const signInWithGoogle = async () => {
 
         // إعادة توجيه المستخدم حسب صلاحياته
         if (isAdmin) {
-            window.location.href = '/admin/dashboard.html';
+            window.location.href = 'admin/dashboard.html';
         } else {
-            window.location.href = '/index.html';
+            window.location.href = 'index.html';
         }
 
         return user;
@@ -164,7 +194,7 @@ export const logoutUser = async () => {
     try {
         await signOut(auth);
         localStorage.removeItem('user');
-        window.location.href = '/login.html';
+        window.location.href = 'login.html';
     } catch (error) {
         console.error('خطأ في تسجيل الخروج:', error);
         throw error;
@@ -202,7 +232,7 @@ export const checkAdminAuth = async () => {
         return true;
     } catch (error) {
         console.error('خطأ في التحقق من الصلاحيات:', error);
-        window.location.href = '/login.html';
+        window.location.href = 'login.html';
         throw error;
     }
 };

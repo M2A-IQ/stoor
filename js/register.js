@@ -61,13 +61,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
+            console.log('بدء عملية إنشاء الحساب...');
             // تعطيل زر التسجيل وإظهار مؤشر التحميل
             registerButton.disabled = true;
             spinner.classList.remove('d-none');
             btnText.textContent = 'جاري إنشاء الحساب...';
 
+            console.log('إنشاء حساب في Firebase...');
             // إنشاء حساب جديد في Firebase
-            await createAccount(email, password);
+            const user = await createAccount(email, password);
+            
+            console.log('تحديث معلومات المستخدم...');
+            // تحديث معلومات المستخدم في localStorage
+            const userData = JSON.parse(localStorage.getItem('user'));
+            localStorage.setItem('user', JSON.stringify({
+                ...userData,
+                displayName: `${firstName} ${lastName}`,
+                firstName: firstName,
+                lastName: lastName
+            }));
+            console.log('تم تحديث معلومات المستخدم بنجاح');
         } catch (error) {
             // معالجة الأخطاء
             let errorMessage = 'حدث خطأ أثناء إنشاء الحساب';

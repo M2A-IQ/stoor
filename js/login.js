@@ -22,12 +22,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const password = document.getElementById('password').value;
 
         try {
+            console.log('بدء عملية تسجيل الدخول...');
             // تعطيل زر تسجيل الدخول وإظهار مؤشر التحميل
             loginButton.disabled = true;
             spinner.classList.remove('d-none');
             btnText.textContent = 'جاري تسجيل الدخول...';
 
+            console.log('محاولة تسجيل الدخول...');
             await loginWithEmailAndPassword(email, password);
+            console.log('تم تسجيل الدخول بنجاح');
         } catch (error) {
             // إظهار رسالة الخطأ
             let errorMessage = 'حدث خطأ أثناء تسجيل الدخول';
