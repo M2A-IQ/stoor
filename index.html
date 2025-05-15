@@ -53,6 +53,7 @@
                         <a href="login.html" class="btn btn-outline-light me-2" id="login-button">
                             <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
                         </a>
+                        <span class="navbar-text me-2 text-white d-none" id="username-display"></span>
                         <button class="btn btn-outline-light me-2 d-none" id="logout-button" onclick="confirmLogout()">
                             <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
                         </button>
@@ -451,14 +452,24 @@
             logoutButton.classList.add('d-none');
         }
 
-        // الاستماع لتغييرات حالة المصادقة
+        // التحقق من حالة المصادقة وعرض اسم المستخدم
         window.checkAuthState((user) => {
+            const loginButton = document.getElementById('login-button');
+            const logoutButton = document.getElementById('logout-button');
+            const usernameDisplay = document.getElementById('username-display');
+
             if (user) {
+                // المستخدم مسجل الدخول
                 loginButton.classList.add('d-none');
                 logoutButton.classList.remove('d-none');
+                usernameDisplay.classList.remove('d-none');
+                usernameDisplay.textContent = `مرحباً، ${user.displayName || user.email}`; // عرض اسم المستخدم أو البريد الإلكتروني
             } else {
+                // المستخدم غير مسجل الدخول
                 loginButton.classList.remove('d-none');
                 logoutButton.classList.add('d-none');
+                usernameDisplay.classList.add('d-none');
+                usernameDisplay.textContent = '';
             }
         });
     });
