@@ -45,9 +45,12 @@ window.createAccount = async (email, password, username) => {
 
     return userCredential;
   } catch (error) {
+    console.error("Error creating account or saving user data:", error);
     throw error;
   }
 };
+
+
 
 window.loginWithEmailAndPassword = async (email, password) => {
   try {
@@ -70,9 +73,12 @@ window.loginWithEmailAndPassword = async (email, password) => {
 
     return userCredential;
   } catch (error) {
+    console.error("Error creating account or saving user data:", error);
     throw error;
   }
 };
+
+
 
 window.signInWithGoogle = async () => {
   try {
@@ -99,9 +105,12 @@ window.signInWithGoogle = async () => {
 
     return result;
   } catch (error) {
+    console.error("Error creating account or saving user data:", error);
     throw error;
   }
 };
+
+
 
 window.logoutUser = async () => {
   try {
@@ -109,9 +118,12 @@ window.logoutUser = async () => {
     // مسح معلومات المستخدم من localStorage
     localStorage.removeItem('user');
   } catch (error) {
+    console.error("Error creating account or saving user data:", error);
     throw error;
   }
 };
+
+
 
 window.checkAuthState = (callback) => {
   return auth.onAuthStateChanged((user) => {
