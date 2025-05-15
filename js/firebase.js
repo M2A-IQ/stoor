@@ -52,8 +52,7 @@ window.signInWithGoogle = async () => {
   try {
     const provider = new firebase.auth.GoogleAuthProvider();
     provider.setCustomParameters({
-      client_id: '427333905777-ih70b6su7dc8fhqc0eocmqd33ntc29jd.apps.googleusercontent.com',
-      client_secret: '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'
+      client_id: '427333905777-ih70b6su7dc8fhqc0eocmqd33ntc29jd.apps.googleusercontent.com'
     });
     const result = await auth.signInWithPopup(provider);
     const user = result.user;
