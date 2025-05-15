@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إنشاء حساب | متجرنا الإلكتروني</title>
+    <title>تسجيل الدخول | متجرنا الإلكتروني</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -203,19 +203,19 @@
     <div class="container">
         <div class="auth-container">
             <div class="auth-header">
-                <h2>إنشاء حساب جديد</h2>
-                <p>أنشئ حسابك للمتابعة إلى متجرنا</p>
+                <h2>تسجيل الدخول</h2>
+                <p>قم بتسجيل الدخول للمتابعة إلى متجرنا</p>
             </div>
 
             <div id="errorMessage" class="error-message text-center"></div>
 
             <div class="btn-group" role="group" aria-label="Authentication method">
-                <button type="button" class="btn btn-secondary" id="loginToggleBtn">تسجيل الدخول</button>
-                <button type="button" class="btn btn-secondary active" id="registerToggleBtn">إنشاء حساب</button>
+                <button type="button" class="btn btn-secondary active" id="loginToggleBtn">تسجيل الدخول</button>
+                <button type="button" class="btn btn-secondary" id="registerToggleBtn">إنشاء حساب</button>
             </div>
 
             <!-- نموذج تسجيل الدخول -->
-            <div id="loginFormContainer" class="auth-form-container" style="display: none;">
+            <div id="loginFormContainer" class="auth-form-container">
                 <form id="loginForm">
                     <div class="form-floating">
                         <input type="email" class="form-control" id="loginEmail" placeholder="البريد الإلكتروني" required>
@@ -240,7 +240,7 @@
             </div>
 
             <!-- نموذج إنشاء حساب جديد -->
-            <div id="registerFormContainer" class="auth-form-container">
+            <div id="registerFormContainer" class="auth-form-container" style="display: none;">
                 <form id="registerForm">
                     <div class="form-floating">
                         <input type="text" class="form-control" id="registerUsername" placeholder="اسم المستخدم" required>
