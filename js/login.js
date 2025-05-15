@@ -1,17 +1,14 @@
-import { loginWithPhoneAndPassword, verifyCode } from './firebase.js';
+import { loginWithEmailAndPassword, signInWithGoogle, resetPassword } from './firebase.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginForm');
-    const verificationForm = document.getElementById('verificationCodeForm');
     const loginButton = document.getElementById('loginButton');
-    const verifyButton = document.getElementById('verifyButton');
-    const resendButton = document.getElementById('resendCode');
-    const spinnerLogin = loginButton.querySelector('.spinner-border');
-    const spinnerVerify = verifyButton.querySelector('.spinner-border');
-    const btnTextLogin = loginButton.querySelector('.btn-text');
-    const btnTextVerify = verifyButton.querySelector('.btn-text');
+    const spinner = loginButton.querySelector('.spinner-border');
+    const btnText = loginButton.querySelector('.btn-text');
+    const errorElement = document.getElementById('errorMessage');
+    const togglePasswordButton = document.getElementById('togglePassword');
 
-    // معالجة إرسال رمز التحقق
+    // معالجة تسجيل الدخول
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
@@ -21,101 +18,90 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const phone = document.getElementById('phone').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
 
         try {
-            // تعطيل زر الإرسال وإظهار مؤشر التحميل
+            // تعطيل زر تسجيل الدخول وإظهار مؤشر التحميل
             loginButton.disabled = true;
-            spinnerLogin.classList.remove('d-none');
-            btnTextLogin.textContent = 'جاري إرسال الرمز...';
+            spinner.classList.remove('d-none');
+            btnText.textContent = 'جاري تسجيل الدخول...';
 
-            // تهيئة reCAPTCHA قبل إرسال رمز التحقق
-            const verifier = await initRecaptcha();
-            if (!verifier) {
-                throw new Error('فشل في تهيئة reCAPTCHA');
-            }
-
-            const result = await loginWithPhoneAndPassword(phone);
-            if (result) {
-                // إظهار نموذج التحقق وإخفاء نموذج تسجيل الدخول
-                document.getElementById('verificationCodeForm').classList.remove('d-none');
-                document.getElementById('loginForm').classList.add('d-none');
-            }
+            await loginWithEmailAndPassword(email, password);
         } catch (error) {
             // إظهار رسالة الخطأ
-            let errorMessage = 'حدث خطأ أثناء إرسال رمز التحقق';
+            let errorMessage = 'حدث خطأ أثناء تسجيل الدخول';
             switch (error.code) {
-                case 'auth/invalid-phone-number':
-                    errorMessage = 'رقم الهاتف غير صالح';
+                case 'auth/user-not-found':
+                    errorMessage = 'البريد الإلكتروني غير مسجل';
+                    break;
+                case 'auth/wrong-password':
+                    errorMessage = 'كلمة المرور غير صحيحة';
+                    break;
+                case 'auth/invalid-email':
+                    errorMessage = 'البريد الإلكتروني غير صالح';
                     break;
                 case 'auth/too-many-requests':
-                    errorMessage = 'تم إرسال العديد من الطلبات. يرجى المحاولة لاحقاً';
-                    break;
-                case 'auth/quota-exceeded':
-                    errorMessage = 'تم تجاوز الحد المسموح به من المحاولات';
+                    errorMessage = 'تم تجاوز عدد المحاولات المسموح بها. يرجى المحاولة لاحقاً';
                     break;
             }
-            const errorElement = document.getElementById('errorMessage');
             errorElement.textContent = errorMessage;
             errorElement.classList.remove('d-none');
         } finally {
-            // إعادة تفعيل زر الإرسال وإخفاء مؤشر التحميل
+            // إعادة تفعيل زر تسجيل الدخول وإخفاء مؤشر التحميل
             loginButton.disabled = false;
-            spinnerLogin.classList.add('d-none');
-            btnTextLogin.innerHTML = '<i class="fas fa-paper-plane me-2"></i> إرسال رمز التحقق';
+            spinner.classList.add('d-none');
+            btnText.innerHTML = '<i class="fas fa-sign-in-alt me-2"></i> تسجيل الدخول';
         }
     });
 
-    // معالجة التحقق من الرمز
-    verificationForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
+    // معالجة إظهار/إخفاء كلمة المرور
+    togglePasswordButton.addEventListener('click', () => {
+        const passwordInput = document.getElementById('password');
+        const icon = togglePasswordButton.querySelector('i');
         
-        if (!verificationForm.checkValidity()) {
-            e.stopPropagation();
-            verificationForm.classList.add('was-validated');
-            return;
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
         }
+    });
 
-        const code = document.getElementById('verificationCode').value;
-
+    // معالجة تسجيل الدخول باستخدام Google
+    window.handleCredentialResponse = async (response) => {
         try {
-            // تعطيل زر التحقق وإظهار مؤشر التحميل
-            verifyButton.disabled = true;
-            spinnerVerify.classList.remove('d-none');
-            btnTextVerify.textContent = 'جاري التحقق...';
-
-            await verifyCode(code);
+            await signInWithGoogle();
         } catch (error) {
-            // إظهار رسالة الخطأ
-            let errorMessage = 'حدث خطأ أثناء التحقق من الرمز';
-            switch (error.code) {
-                case 'auth/invalid-verification-code':
-                    errorMessage = 'رمز التحقق غير صحيح';
-                    break;
-                case 'auth/code-expired':
-                    errorMessage = 'انتهت صلاحية رمز التحقق';
-                    break;
+            console.error('خطأ في تسجيل الدخول باستخدام Google:', error);
+            errorElement.textContent = 'حدث خطأ في تسجيل الدخول باستخدام Google';
+            errorElement.classList.remove('d-none');
+        }
+    };
+
+    // معالجة نسيت كلمة المرور
+    const forgotPasswordLink = document.querySelector('a[href="forgot-password.html"]');
+    if (forgotPasswordLink) {
+        forgotPasswordLink.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            
+            if (!email) {
+                errorElement.textContent = 'يرجى إدخال البريد الإلكتروني لإعادة تعيين كلمة المرور';
+                errorElement.classList.remove('d-none');
+                return;
             }
-            alert(errorMessage);
-        } finally {
-            // إعادة تفعيل زر التحقق وإخفاء مؤشر التحميل
-            verifyButton.disabled = false;
-            spinnerVerify.classList.add('d-none');
-            btnTextVerify.innerHTML = '<i class="fas fa-check me-2"></i> تأكيد الرمز';
-        }
-    });
 
-    // معالجة إعادة إرسال الرمز
-    resendButton.addEventListener('click', async () => {
-        const phone = document.getElementById('phone').value;
-        resendButton.disabled = true;
-        try {
-            await loginWithPhoneAndPassword(phone);
-            alert('تم إعادة إرسال رمز التحقق');
-        } catch (error) {
-            alert('حدث خطأ أثناء إعادة إرسال الرمز');
-        } finally {
-            resendButton.disabled = false;
-        }
-    });
+            try {
+                await resetPassword(email);
+            } catch (error) {
+                console.error('خطأ في إرسال رابط إعادة تعيين كلمة المرور:', error);
+                errorElement.textContent = 'حدث خطأ في إرسال رابط إعادة تعيين كلمة المرور';
+                errorElement.classList.remove('d-none');
+            }
+        });
+    }
 });

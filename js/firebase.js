@@ -1,6 +1,15 @@
 // تهيئة Firebase
 import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithPhoneNumber, signOut, onAuthStateChanged, RecaptchaVerifier } from 'firebase/auth';
+import { 
+    getAuth, 
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword, 
+    signOut, 
+    onAuthStateChanged,
+    sendPasswordResetEmail,
+    GoogleAuthProvider,
+    signInWithPopup
+} from 'firebase/auth';
 import { getAnalytics } from 'firebase/analytics';
 
 // تكوين Firebase
@@ -18,76 +27,55 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const analytics = getAnalytics(app);
+const googleProvider = new GoogleAuthProvider();
 
-// تهيئة RecaptchaVerifier
-window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
-    size: 'normal',
-    callback: response => {
-        console.log('reCAPTCHA solved');
-        const loginButton = document.getElementById('loginButton');
-        if (loginButton) loginButton.disabled = false;
-    },
-    'expired-callback': () => {
-        console.log('reCAPTCHA expired');
-        window.recaptchaVerifier = null;
-        const loginButton = document.getElementById('loginButton');
-        if (loginButton) loginButton.disabled = true;
-    }
-}, auth);
-
-// دالة تنسيق رقم الهاتف
-function formatPhoneNumber(phone) {
-    const cleaned = phone.replace(/\D/g, '');
-    return `+964${cleaned}`;
-}
-
-// دالة تسجيل الدخول باستخدام رقم الهاتف
-export const loginWithPhoneAndPassword = async (phone) => {
+// دالة إنشاء حساب جديد
+export const createAccount = async (email, password) => {
     try {
-        const formattedPhone = formatPhoneNumber(phone);
-        const appVerifier = window.recaptchaVerifier;
-
-        const confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
-        window.confirmationResult = confirmationResult;
-
-        const verificationForm = document.getElementById('verificationCodeForm');
-        const loginForm = document.getElementById('loginForm');
-
-        if (verificationForm && loginForm) {
-            verificationForm.classList.remove('d-none');
-            loginForm.classList.add('d-none');
-            alert('تم إرسال الرمز');
-        } else {
-            throw new Error('لم يتم العثور على نماذج التحقق');
-        }
-
-        return confirmationResult;
-    } catch (error) {
-        console.error('خطأ في إرسال رمز التحقق:', error);
-        alert('خطأ في الإرسال: ' + error.message);
-        window.recaptchaVerifier = null;
-        throw error;
-    }
-};
-
-// دالة التحقق من الرمز
-export const verifyCode = async (code) => {
-    try {
-        const confirmationResult = window.confirmationResult;
-        if (!confirmationResult) {
-            throw new Error('لم يتم إرسال رمز التحقق');
-        }
-
-        const result = await confirmationResult.confirm(code);
-        const user = result.user;
-
-        // التحقق من رقم الهاتف للمسؤول
-        const isAdmin = user.phoneNumber === '+9647727139210';
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
 
         // تخزين معلومات المستخدم في localStorage
         localStorage.setItem('user', JSON.stringify({
             uid: user.uid,
-            phone: user.phoneNumber,
+            email: user.email,
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+            role: 'user',
+            lastLogin: new Date().toISOString()
+        }));
+
+        alert('تم إنشاء الحساب بنجاح');
+        window.location.href = '/index.html';
+        return user;
+    } catch (error) {
+        console.error('خطأ في إنشاء الحساب:', error);
+        let errorMessage = 'حدث خطأ في إنشاء الحساب';
+        if (error.code === 'auth/email-already-in-use') {
+            errorMessage = 'البريد الإلكتروني مستخدم بالفعل';
+        } else if (error.code === 'auth/weak-password') {
+            errorMessage = 'كلمة المرور ضعيفة جداً';
+        } else if (error.code === 'auth/invalid-email') {
+            errorMessage = 'البريد الإلكتروني غير صالح';
+        }
+        alert(errorMessage);
+        throw error;
+    }
+};
+
+// دالة تسجيل الدخول
+export const loginWithEmailAndPassword = async (email, password) => {
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // التحقق من البريد الإلكتروني للمسؤول
+        const isAdmin = user.email === 'admin@stor.com';
+
+        // تخزين معلومات المستخدم في localStorage
+        localStorage.setItem('user', JSON.stringify({
+            uid: user.uid,
+            email: user.email,
             displayName: user.displayName,
             photoURL: user.photoURL,
             role: isAdmin ? 'admin' : 'user',
@@ -105,8 +93,68 @@ export const verifyCode = async (code) => {
 
         return user;
     } catch (error) {
-        console.error('خطأ في التحقق من الرمز:', error);
-        alert('الرمز غير صحيح');
+        console.error('خطأ في تسجيل الدخول:', error);
+        let errorMessage = 'حدث خطأ في تسجيل الدخول';
+        if (error.code === 'auth/user-not-found') {
+            errorMessage = 'البريد الإلكتروني غير مسجل';
+        } else if (error.code === 'auth/wrong-password') {
+            errorMessage = 'كلمة المرور غير صحيحة';
+        } else if (error.code === 'auth/invalid-email') {
+            errorMessage = 'البريد الإلكتروني غير صالح';
+        }
+        alert(errorMessage);
+        throw error;
+    }
+};
+
+// دالة تسجيل الدخول باستخدام Google
+export const signInWithGoogle = async () => {
+    try {
+        const result = await signInWithPopup(auth, googleProvider);
+        const user = result.user;
+
+        // التحقق من البريد الإلكتروني للمسؤول
+        const isAdmin = user.email === 'admin@stor.com';
+
+        // تخزين معلومات المستخدم في localStorage
+        localStorage.setItem('user', JSON.stringify({
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+            role: isAdmin ? 'admin' : 'user',
+            lastLogin: new Date().toISOString()
+        }));
+
+        // إعادة توجيه المستخدم حسب صلاحياته
+        if (isAdmin) {
+            window.location.href = '/admin/dashboard.html';
+        } else {
+            window.location.href = '/index.html';
+        }
+
+        return user;
+    } catch (error) {
+        console.error('خطأ في تسجيل الدخول باستخدام Google:', error);
+        alert('حدث خطأ في تسجيل الدخول باستخدام Google');
+        throw error;
+    }
+};
+
+// دالة إعادة تعيين كلمة المرور
+export const resetPassword = async (email) => {
+    try {
+        await sendPasswordResetEmail(auth, email);
+        alert('تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني');
+    } catch (error) {
+        console.error('خطأ في إرسال رابط إعادة تعيين كلمة المرور:', error);
+        let errorMessage = 'حدث خطأ في إرسال رابط إعادة تعيين كلمة المرور';
+        if (error.code === 'auth/user-not-found') {
+            errorMessage = 'البريد الإلكتروني غير مسجل';
+        } else if (error.code === 'auth/invalid-email') {
+            errorMessage = 'البريد الإلكتروني غير صالح';
+        }
+        alert(errorMessage);
         throw error;
     }
 };
@@ -142,7 +190,7 @@ export const checkAdminAuth = async () => {
         const user = await checkAuthState();
         if (!user) throw new Error('لم يتم تسجيل الدخول');
 
-        const isAdmin = user.phoneNumber === '+9647727139210';
+        const isAdmin = user.email === 'admin@stor.com';
         if (!isAdmin) throw new Error('غير مصرح بالوصول');
 
         const userData = JSON.parse(localStorage.getItem('user'));
