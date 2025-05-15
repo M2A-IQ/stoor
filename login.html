@@ -35,28 +35,13 @@
             justify-content: center;
             margin-bottom: 20px;
         }
-    </style>
-<script>
-  window.fbAsyncInit = function() {
-    FB.init({
-      appId      : '{your-app-id}',
-      cookie     : true,
-      xfbml      : true,
-      version    : '{api-version}'
-    });
-    
-    FB.AppEvents.logPageView();   
-    
-  };
 
-  (function(d, s, id){
-     var js, fjs = d.getElementsByTagName(s)[0];
-     if (d.getElementById(id)) {return;}
-     js = d.createElement(s); js.id = id;
-     js.src = "https://connect.facebook.net/en_US/sdk.js";
-     fjs.parentNode.insertBefore(js, fjs);
-   }(document, 'script', 'facebook-jssdk'));
-</script>
+        #recaptcha-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+    </style>
 </head>
 <body>
     <!-- شريط التنقل العلوي -->
@@ -71,28 +56,14 @@
                     <li class="nav-item">
                         <a class="nav-link" href="index.html">الرئيسية</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                            الأقسام
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="products/category.html?id=1">إلكترونيات</a></li>
-                            <li><a class="dropdown-item" href="products/category.html?id=2">ملابس</a></li>
-                            <li><a class="dropdown-item" href="products/category.html?id=3">أثاث منزلي</a></li>
-                            <li><a class="dropdown-item" href="products/category.html?id=4">مستلزمات رياضية</a></li>
-                        </ul>
-                    </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="products/all.html">جميع المنتجات</a>
+                        <a class="nav-link" href="categories.html">الأقسام</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="contact.html">اتصل بنا</a>
                     </li>
                 </ul>
                 <div class="d-flex">
-                    <button class="theme-toggle" onclick="toggleDarkMode()" title="تبديل الوضع الداكن">
-                        <i class="fas fa-moon"></i>
-                    </button>
                     <a href="cart.html" class="btn btn-outline-light me-2">
                         <i class="fas fa-shopping-cart"></i> سلة التسوق <span class="badge bg-danger cart-count">0</span>
                     </a>
@@ -122,9 +93,9 @@
                     <!-- نموذج تسجيل الدخول -->
                     <form id="loginForm" novalidate>
                         <div class="mb-3">
-                            <label for="phone" class="form-label">رقم الهاتف</label>
+                            <label for="phoneNumber" class="form-label">رقم الهاتف</label>
                             <div class="input-group">
-                                <input type="tel" class="form-control" id="phone" placeholder="أدخل رقم الهاتف" pattern="[0-9]{10}" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                                <input type="tel" class="form-control" id="phoneNumber" placeholder="أدخل رقم الهاتف" pattern="[0-9]{10}" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
                                 <span class="input-group-text">964+</span>
                                 <span class="input-group-text"><i class="fas fa-phone"></i></span>
                             </div>
@@ -133,9 +104,9 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">التحقق من أنك لست روبوتاً</label>
-                            <div id="recaptcha-container" class="d-flex justify-content-center mb-3"></div>
+                            <div id="recaptcha-container"></div>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100 mb-3" id="loginButton" disabled>
+                        <button type="submit" class="btn btn-primary w-100 mb-3" id="loginButton" onclick="sendOTP()" disabled>
                             <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                             <span class="btn-text"><i class="fas fa-sign-in-alt me-2"></i> إرسال رمز التحقق</span>
                         </button>
@@ -144,15 +115,15 @@
                     <!-- نموذج التحقق من الرمز -->
                     <form id="verificationCodeForm" class="d-none" novalidate>
                         <div class="mb-3">
-                            <label for="verificationCode" class="form-label">رمز التحقق</label>
+                            <label for="otpCode" class="form-label">رمز التحقق</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" id="verificationCode" placeholder="أدخل رمز التحقق" pattern="[0-9]{6}" maxlength="6" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                                <input type="text" class="form-control" id="otpCode" placeholder="أدخل رمز التحقق" pattern="[0-9]{6}" maxlength="6" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
                                 <span class="input-group-text"><i class="fas fa-key"></i></span>
                             </div>
                             <div class="invalid-feedback">يرجى إدخال رمز التحقق المكون من 6 أرقام</div>
                             <div class="form-text">تم إرسال رمز التحقق إلى رقم هاتفك</div>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100 mb-3" id="verifyButton">
+                        <button type="submit" class="btn btn-primary w-100 mb-3" onclick="verifyOTP()">
                             <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                             <span class="btn-text"><i class="fas fa-check me-2"></i> تحقق من الرمز</span>
                         </button>
@@ -179,22 +150,7 @@
                                 data-shape="rectangular"
                                 data-logo_alignment="left">
                             </div>
-                            <button onclick="loginWithFacebook()" class="btn btn-primary ms-2">
-                                <i class="fab fa-facebook-f"></i> تسجيل الدخول بالفيسبوك
-                            </button>
                         </div>
-                        <script>
-                            function loginWithFacebook() {
-                                FB.login(function(response) {
-                                    if (response.authResponse) {
-                                        FB.api('/me', function(response) {
-                                            localStorage.setItem('user', JSON.stringify(response));
-                                            window.location.href = 'index.html';
-                                        });
-                                    }
-                                }, {scope: 'public_profile,email'});
-                            }
-                        </script>
                     </div>
                     
                     <!-- رابط إنشاء حساب جديد -->
@@ -206,183 +162,42 @@
         </div>
     </div>
 
-    <!-- تذييل الصفحة -->
-    <footer class="bg-dark text-white py-4">
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-5">
         <div class="container">
             <div class="row">
-                <div class="col-md-3 col-sm-6 mb-4">
-                    <h5>متجرنا الإلكتروني</h5>
-                    <p>متجر إلكتروني شامل يوفر مجموعة واسعة من المنتجات بأفضل الأسعار وجودة عالية.</p>
-                    <div class="social-links">
-                        <a href="#" class="text-white me-2"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="text-white me-2"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="text-white me-2"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="text-white"><i class="fab fa-youtube"></i></a>
-                    </div>
+                <div class="col-md-4 mb-3">
+                    <h5>عن المتجر</h5>
+                    <p>متجر إلكتروني رائد في مجال التجارة الإلكترونية، نقدم أفضل المنتجات بأفضل الأسعار.</p>
                 </div>
-                <div class="col-md-3 col-sm-6 mb-4">
+                <div class="col-md-4 mb-3">
                     <h5>روابط سريعة</h5>
                     <ul class="list-unstyled">
-                        <li><a href="index.html" class="text-white">الرئيسية</a></li>
-                        <li><a href="products/all.html" class="text-white">المنتجات</a></li>
-                        <li><a href="about.html" class="text-white">من نحن</a></li>
-                        <li><a href="contact.html" class="text-white">اتصل بنا</a></li>
-                        <li><a href="faq.html" class="text-white">الأسئلة الشائعة</a></li>
+                        <li><a href="about.html" class="text-light">من نحن</a></li>
+                        <li><a href="contact.html" class="text-light">اتصل بنا</a></li>
+                        <li><a href="privacy.html" class="text-light">سياسة الخصوصية</a></li>
+                        <li><a href="terms.html" class="text-light">الشروط والأحكام</a></li>
                     </ul>
                 </div>
-                <div class="col-md-3 col-sm-6 mb-4">
-                    <h5>خدمة العملاء</h5>
+                <div class="col-md-4 mb-3">
+                    <h5>تواصل معنا</h5>
                     <ul class="list-unstyled">
-                        <li><a href="account/orders.html" class="text-white">تتبع الطلبات</a></li>
-                        <li><a href="shipping.html" class="text-white">سياسة الشحن</a></li>
-                        <li><a href="returns.html" class="text-white">سياسة الإرجاع</a></li>
-                        <li><a href="privacy.html" class="text-white">سياسة الخصوصية</a></li>
-                        <li><a href="terms.html" class="text-white">شروط الاستخدام</a></li>
+                        <li><i class="fas fa-phone"></i> +964 780 123 4567</li>
+                        <li><i class="fas fa-envelope"></i> info@store.com</li>
+                        <li><i class="fas fa-map-marker-alt"></i> بغداد، العراق</li>
                     </ul>
-                </div>
-                <div class="col-md-3 col-sm-6 mb-4">
-                    <h5>اتصل بنا</h5>
-                    <address>
-                        <p><i class="fas fa-map-marker-alt me-2"></i> شارع الرياض، المملكة العربية السعودية</p>
-                        <p><i class="fas fa-phone-alt me-2"></i> +966 12 345 6789</p>
-                        <p><i class="fas fa-envelope me-2"></i> info@store.com</p>
-                    </address>
                 </div>
             </div>
-            <hr class="my-4">
-            <div class="row">
-                <div class="col-md-6">
-                    <p class="mb-md-0">© 2023 متجرنا الإلكتروني. جميع الحقوق محفوظة.</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <img src="images/payment-methods.svg" alt="طرق الدفع" class="payment-methods">
-                </div>
+            <hr class="bg-light">
+            <div class="text-center">
+                <p class="mb-0">جميع الحقوق محفوظة © 2024 متجرنا الإلكتروني</p>
             </div>
         </div>
     </footer>
 
-    <!-- زر العودة للأعلى -->
-    <button id="backToTop" class="btn btn-primary back-to-top">
-        <i class="fas fa-arrow-up"></i>
-    </button>
-
-    <!-- مكتبات JavaScript -->
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script type="module">
-        import { loginWithPhoneAndPassword, verifyCode } from './js/firebase.js';
-
-        // تهيئة النموذج
-        const loginForm = document.getElementById('loginForm');
-        const verificationCodeForm = document.getElementById('verificationCodeForm');
-        const phoneInput = document.getElementById('phone');
-        const verificationCodeInput = document.getElementById('verificationCode');
-        const errorMessage = document.getElementById('errorMessage');
-        const loginButton = document.getElementById('loginButton');
-        const verifyButton = document.getElementById('verifyButton');
-        const loginSpinner = loginButton.querySelector('.spinner-border');
-        const verifySpinner = verifyButton.querySelector('.spinner-border');
-        const loginButtonText = loginButton.querySelector('.btn-text');
-        const verifyButtonText = verifyButton.querySelector('.btn-text');
-
-        // دالة إظهار رسالة الخطأ
-        function showError(message) {
-            errorMessage.textContent = message;
-            errorMessage.classList.remove('d-none');
-        }
-
-        // دالة إخفاء رسالة الخطأ
-        function hideError() {
-            errorMessage.classList.add('d-none');
-        }
-
-        // دالة تبديل حالة زر تسجيل الدخول
-        function toggleLoginButton(loading) {
-            loginButton.disabled = loading;
-            loginSpinner.classList.toggle('d-none', !loading);
-            loginButtonText.textContent = loading ? 'جاري إرسال رمز التحقق...' : 'إرسال رمز التحقق';
-        }
-
-        // دالة تبديل حالة زر التحقق
-        function toggleVerifyButton(loading) {
-            verifyButton.disabled = loading;
-            verifySpinner.classList.toggle('d-none', !loading);
-            verifyButtonText.textContent = loading ? 'جاري التحقق...' : 'تحقق من الرمز';
-        }
-
-        // معالجة تسجيل الدخول
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            hideError();
-
-            try {
-                toggleLoginButton(true);
-                
-                // محاولة تسجيل الدخول
-                await loginWithPhoneAndPassword(phoneInput.value);
-            } catch (error) {
-                // معالجة الأخطاء
-                let errorMsg = 'حدث خطأ أثناء إرسال رمز التحقق';
-                
-                switch (error.code) {
-                    case 'auth/invalid-phone':
-                        errorMsg = 'رقم الهاتف غير صحيح';
-                        break;
-                    case 'auth/too-many-requests':
-                        errorMsg = 'تم إرسال العديد من الطلبات. يرجى المحاولة لاحقاً';
-                        break;
-                }
-                
-                showError(errorMsg);
-            } finally {
-                toggleLoginButton(false);
-            }
-        });
-
-        // معالجة التحقق من الرمز
-        verificationCodeForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            hideError();
-
-            try {
-                toggleVerifyButton(true);
-                
-                // محاولة التحقق من الرمز
-                await verifyCode(verificationCodeInput.value);
-            } catch (error) {
-                // معالجة الأخطاء
-                let errorMsg = 'حدث خطأ أثناء التحقق من الرمز';
-                
-                switch (error.code) {
-                    case 'auth/invalid-verification-code':
-                        errorMsg = 'رمز التحقق غير صحيح';
-                        break;
-                    case 'auth/code-expired':
-                        errorMsg = 'انتهت صلاحية رمز التحقق';
-                        break;
-                }
-                
-                showError(errorMsg);
-            } finally {
-                toggleVerifyButton(false);
-            }
-        });
-
-        // استرجاع رقم الهاتف المحفوظ
-        if (localStorage.getItem('rememberedPhone')) {
-            phoneInput.value = localStorage.getItem('rememberedPhone');
-        }
-    </script>
-    <script src="js/main.js"></script>
-    <script src="js/cart.js"></script>
-    
-    <script>
-        function handleCredentialResponse(response) {
-            // حفظ معلومات المستخدم في localStorage
-            localStorage.setItem('user', JSON.stringify(response));
-            
-            // إعادة توجيه المستخدم إلى الصفحة الرئيسية
-            window.location.href = 'index.html';
-        }
-    </script>
+    <script type="module" src="js/firebase.js"></script>
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>
