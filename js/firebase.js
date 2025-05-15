@@ -161,46 +161,60 @@ window.logoutUser = async () => {
 
 
 
-window.checkAuthState = (callback) => {
-  return auth.onAuthStateChanged(async (user) => {
-    console.log('Authentication state changed. User:', user);
+window.checkAuthState = () => {
+  auth.onAuthStateChanged(async (user) => {
+    const loginButton = document.getElementById('login-button');
+    const logoutButton = document.getElementById('logout-button');
+    const usernameDisplay = document.getElementById('username-display');
+    const adminButton = document.getElementById('admin-button');
+
     if (user) {
+      // إخفاء زر تسجيل الدخول
+      loginButton.classList.add('d-none');
+      
+      // إظهار زر تسجيل الخروج واسم المستخدم
+      logoutButton.classList.remove('d-none');
+      usernameDisplay.classList.remove('d-none');
+      usernameDisplay.textContent = user.displayName || user.email;
+
       // التحقق من حالة المشرف
-      let isAdmin = false;
-      try {
-        const userDoc = await db.collection('users').doc(user.uid).get();
-        const userData = userDoc.data();
-        isAdmin = userData?.isAdmin || adminEmails.includes(user.email);
-      } catch (error) {
-        console.error('Error checking admin status:', error);
-        isAdmin = adminEmails.includes(user.email);
+      const userDoc = await db.collection('users').doc(user.uid).get();
+      const userData = userDoc.data();
+      const isAdmin = userData?.isAdmin || adminEmails.includes(user.email);
+
+      // إظهار/إخفاء زر لوحة التحكم بناءً على حالة المشرف
+      if (isAdmin && adminButton) {
+        adminButton.classList.remove('d-none');
+      } else if (adminButton) {
+        adminButton.classList.add('d-none');
       }
 
-      // تحديث معلومات المستخدم في localStorage
+      // حفظ معلومات المستخدم في localStorage
       localStorage.setItem('user', JSON.stringify({
         uid: user.uid,
         email: user.email,
         displayName: user.displayName,
         isAdmin: isAdmin
       }));
-      console.log('User logged in. Display Name:', user.displayName, 'Is Admin:', isAdmin);
 
-      // تحديث معلومات المستخدم في Firestore
-      await db.collection('users').doc(user.uid).set({
-        email: user.email,
-        displayName: user.displayName,
-        isAdmin: isAdmin
-      }, { merge: true });
-
-      // توجيه المشرف إلى لوحة التحكم إذا لم يكن في صفحة لوحة التحكم
+      // توجيه المشرف إلى لوحة التحكم إذا لم يكن موجودًا فيها
       if (isAdmin && !window.location.pathname.includes('/admin/')) {
         window.location.href = '../admin/dashboard.html';
       }
     } else {
-      // مسح معلومات المستخدم من localStorage عند تسجيل الخروج
+      // إظهار زر تسجيل الدخول
+      loginButton.classList.remove('d-none');
+      
+      // إخفاء زر تسجيل الخروج واسم المستخدم ولوحة التحكم
+      logoutButton.classList.add('d-none');
+      usernameDisplay.classList.add('d-none');
+      usernameDisplay.textContent = '';
+      if (adminButton) {
+        adminButton.classList.add('d-none');
+      }
+
+      // حذف معلومات المستخدم من localStorage
       localStorage.removeItem('user');
-      console.log('User logged out.');
     }
-    callback(user);
   });
 };
