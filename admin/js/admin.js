@@ -1,7 +1,29 @@
 // وظائف خاصة بلوحة التحكم
 
-// تهيئة المخططات البيانية (يمكن استخدام مكتبة Chart.js في التطبيق الحقيقي)
+// التحقق من حالة المصادقة عند تحميل الصفحة
 document.addEventListener('DOMContentLoaded', function() {
+    checkAdminAuth();
+    initializeUI();
+});
+
+// التحقق من صلاحيات المشرف
+async function checkAdminAuth() {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user || !user.isAdmin) {
+        // إذا لم يكن المستخدم مسجل دخول أو ليس مشرفاً، قم بتوجيهه إلى صفحة تسجيل الدخول
+        window.location.href = '../login.html';
+        return;
+    }
+
+    // تحديث واجهة المستخدم بمعلومات المشرف
+    const adminNameElement = document.querySelector('.admin-name');
+    if (adminNameElement) {
+        adminNameElement.textContent = user.displayName || user.email;
+    }
+}
+
+// تهيئة واجهة المستخدم
+function initializeUI() {
     // تهيئة التلميحات
     const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -13,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
     dropdownTriggerList.map(function (dropdownTriggerEl) {
         return new bootstrap.Dropdown(dropdownTriggerEl);
     });
-});
+}
 
 // دالة لتحديث البيانات في الوقت الحقيقي
 function updateDashboardData() {
