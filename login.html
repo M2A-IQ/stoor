@@ -169,6 +169,12 @@
         .password-toggle:hover {
             color: var(--primary-color);
         }
+
+        .btn-group .btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
     </style>
 </head>
 <body>
@@ -181,50 +187,33 @@
 
             <div id="errorMessage" class="error-message text-center"></div>
 
+            <div class="btn-group mb-4" role="group" aria-label="Authentication method">
+                <button type="button" class="btn btn-secondary active" id="loginToggleBtn">تسجيل الدخول</button>
+                <button type="button" class="btn btn-secondary" id="registerToggleBtn">إنشاء حساب</button>
+            </div>
+
             <!-- نموذج تسجيل الدخول -->
-            <form id="loginForm" class="mb-4">
-                <div class="form-floating">
-                    <input type="email" class="form-control" id="loginEmail" placeholder="البريد الإلكتروني" required>
-                    <label for="loginEmail">البريد الإلكتروني</label>
-                </div>
-                <div class="form-floating position-relative">
-                    <input type="password" class="form-control" id="loginPassword" placeholder="كلمة المرور" required>
-                    <label for="loginPassword">كلمة المرور</label>
-                    <i class="fas fa-eye password-toggle" onclick="togglePassword('loginPassword')"></i>
-                </div>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-sign-in-alt me-2"></i>تسجيل الدخول
-                </button>
-            </form>
+            <div id="loginFormContainer" class="auth-form-container">
+                <form id="loginForm" class="mb-4">
+                    <div class="form-floating">
+                        <input type="email" class="form-control" id="loginEmail" placeholder="البريد الإلكتروني" required>
+                        <label for="loginEmail">البريد الإلكتروني</label>
+                    </div>
+                    <div class="form-floating position-relative">
+                        <input type="password" class="form-control" id="loginPassword" placeholder="كلمة المرور" required>
+                        <label for="loginPassword">كلمة المرور</label>
+                        <i class="fas fa-eye password-toggle" onclick="togglePassword('loginPassword')"></i>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt me-2"></i>تسجيل الدخول
+                    </button>
+                </form>
 
-            <div class="divider">أو</div>
-
-            <button id="googleLogin" class="btn btn-google">
-                <i class="fab fa-google"></i>
-                <span>تسجيل الدخول باستخدام جوجل</span>
-            </button>
+            </div>
 
             <div class="divider">أو</div>
 
             <!-- نموذج إنشاء حساب جديد -->
-            <form id="registerForm">
-                <div class="form-floating">
-                    <input type="text" class="form-control" id="registerUsername" placeholder="اسم المستخدم" required>
-                    <label for="registerUsername">اسم المستخدم</label>
-                </div>
-                <div class="form-floating">
-                    <input type="email" class="form-control" id="registerEmail" placeholder="البريد الإلكتروني" required>
-                    <label for="registerEmail">البريد الإلكتروني</label>
-                </div>
-                <div class="form-floating position-relative">
-                    <input type="password" class="form-control" id="registerPassword" placeholder="كلمة المرور" required>
-                    <label for="registerPassword">كلمة المرور</label>
-                    <i class="fas fa-eye password-toggle" onclick="togglePassword('registerPassword')"></i>
-                </div>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-user-plus me-2"></i>إنشاء حساب
-                </button>
-            </form>
         </div>
     </div>
 
@@ -276,38 +265,33 @@
             }
         });
 
-        // تسجيل الدخول باستخدام جوجل
-        document.getElementById('googleLogin').addEventListener('click', async () => {
-            try {
-                await window.signInWithGoogle();
-                window.location.href = 'index.html';
-            } catch (error) {
-                showError(error.message);
-            }
-        });
-
-        // إنشاء حساب جديد
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('registerEmail').value;
-            const password = document.getElementById('registerPassword').value;
-
-            try {
-                const username = document.getElementById('registerUsername').value;
-                await window.createAccount(email, password, username);
-                alert('تم إنشاء الحساب بنجاح!');
-                window.location.href = 'index.html';
-            } catch (error) {
-                showError(error.message);
-            }
-        });
 
         // التحقق من حالة المصادقة
         window.checkAuthState((user) => {
             if (user) {
                 window.location.href = 'index.html';
+            } else {
+                // إذا لم يكن المستخدم مسجلاً، تأكد من عرض نموذج تسجيل الدخول/إنشاء حساب
+                // يمكن إضافة منطق هنا للتأكد من عرض النموذج الصحيح عند عدم وجود مستخدم مسجل
             }
         });
+
+        // التحكم في عرض نماذج المصادقة
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginToggleBtn = document.getElementById('loginToggleBtn');
+            const registerToggleBtn = document.getElementById('registerToggleBtn');
+
+            loginToggleBtn.classList.add('active');
+
+            loginToggleBtn.addEventListener('click', () => {
+                // Stay on login page
+            });
+
+            registerToggleBtn.addEventListener('click', () => {
+                window.location.href = 'register.html';
+            });
+        });
+
     </script>
 </body>
 </html>
