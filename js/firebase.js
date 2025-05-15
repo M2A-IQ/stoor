@@ -53,7 +53,7 @@ window.createAccount = async (email, password, username) => {
 
     // إذا كان المستخدم مشرفًا، قم بتوجيهه إلى لوحة التحكم
     if (isAdmin) {
-      window.location.href = 'admin/dashboard.html';
+      window.location.href = '../admin/dashboard.html';
     }
 
     return userCredential;
@@ -92,7 +92,7 @@ window.loginWithEmailAndPassword = async (email, password) => {
 
     // توجيه المشرف إلى لوحة التحكم
     if (isAdmin) {
-      window.location.href = 'admin/dashboard.html';
+      window.location.href = '../admin/dashboard.html';
     }
 
     return userCredential;
@@ -135,7 +135,7 @@ window.signInWithGoogle = async () => {
 
     // توجيه المشرف إلى لوحة التحكم
     if (isAdmin) {
-      window.location.href = 'admin/dashboard.html';
+      window.location.href = '../admin/dashboard.html';
     }
 
     return result;
@@ -191,6 +191,11 @@ window.checkAuthState = (callback) => {
         displayName: user.displayName,
         isAdmin: isAdmin
       }, { merge: true });
+
+      // توجيه المشرف إلى لوحة التحكم إذا لم يكن في صفحة لوحة التحكم
+      if (isAdmin && !window.location.pathname.includes('/admin/')) {
+        window.location.href = '../admin/dashboard.html';
+      }
     } else {
       // مسح معلومات المستخدم من localStorage عند تسجيل الخروج
       localStorage.removeItem('user');
