@@ -125,6 +125,7 @@ window.logoutUser = async () => {
 
 
 
+
 window.checkAuthState = (callback) => {
   return auth.onAuthStateChanged((user) => {
     console.log('Authentication state changed. User:', user); // Add this line
@@ -134,9 +135,8 @@ window.checkAuthState = (callback) => {
         uid: user.uid,
         email: user.email,
         displayName: user.displayName,
-        photoURL: user.photoURL
       }));
-      console.log('User logged in. Display Name:', user.displayName); // Add this line
+        console.log('User logged in. Display Name:', user.displayName); // Add this line
     } else {
       // مسح معلومات المستخدم من localStorage عند تسجيل الخروج
       localStorage.removeItem('user');
