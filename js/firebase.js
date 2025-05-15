@@ -1,11 +1,8 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// `https://firebase.google.com/docs/web/setup#available-libraries`
+// Import Firebase from CDN (these scripts should be added to HTML)
+// <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app-compat.js"></script>
+// <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-auth-compat.js"></script>
 
 // Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyDoX7bHO9u98LB9n6Dq8rMwyb_jci_Ha4g",
   authDomain: "stor2-537b7.firebaseapp.com",
@@ -17,40 +14,82 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
 
 // Export functions to window object
-window.createAccount = (email, password) => {
-  return auth.createUserWithEmailAndPassword(email, password);
+window.createAccount = async (email, password) => {
+  try {
+    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+    const user = userCredential.user;
+    // حفظ معلومات المستخدم في localStorage
+    localStorage.setItem('user', JSON.stringify({
+      uid: user.uid,
+      email: user.email
+    }));
+    return userCredential;
+  } catch (error) {
+    throw error;
+  }
 };
 
-window.loginWithEmailAndPassword = (email, password) => {
-  return auth.signInWithEmailAndPassword(email, password);
+window.loginWithEmailAndPassword = async (email, password) => {
+  try {
+    const userCredential = await auth.signInWithEmailAndPassword(email, password);
+    const user = userCredential.user;
+    // حفظ معلومات المستخدم في localStorage
+    localStorage.setItem('user', JSON.stringify({
+      uid: user.uid,
+      email: user.email
+    }));
+    return userCredential;
+  } catch (error) {
+    throw error;
+  }
 };
 
-window.signInWithGoogle = () => {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  return auth.signInWithPopup(provider);
+window.signInWithGoogle = async () => {
+  try {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    const result = await auth.signInWithPopup(provider);
+    const user = result.user;
+    // حفظ معلومات المستخدم في localStorage
+    localStorage.setItem('user', JSON.stringify({
+      uid: user.uid,
+      email: user.email,
+      displayName: user.displayName,
+      photoURL: user.photoURL
+    }));
+    return result;
+  } catch (error) {
+    throw error;
+  }
 };
 
-window.resetPassword = (email) => {
-  return auth.sendPasswordResetEmail(email);
-};
-
-window.logoutUser = () => {
-  return auth.signOut();
+window.logoutUser = async () => {
+  try {
+    await auth.signOut();
+    // مسح معلومات المستخدم من localStorage
+    localStorage.removeItem('user');
+  } catch (error) {
+    throw error;
+  }
 };
 
 window.checkAuthState = (callback) => {
-  auth.onAuthStateChanged(callback);
-};
-
-window.checkAdminAuth = async () => {
-  const user = auth.currentUser;
-  if (user) {
-    const token = await user.getIdTokenResult();
-    return token.claims.admin || false;
-  }
-  return false;
+  return auth.onAuthStateChanged((user) => {
+    if (user) {
+      // تحديث معلومات المستخدم في localStorage
+      localStorage.setItem('user', JSON.stringify({
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+        photoURL: user.photoURL
+      }));
+    } else {
+      // مسح معلومات المستخدم من localStorage عند تسجيل الخروج
+      localStorage.removeItem('user');
+    }
+    callback(user);
+  });
 };
