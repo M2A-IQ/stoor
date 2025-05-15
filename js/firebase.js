@@ -1,6 +1,7 @@
 // Import Firebase from CDN (these scripts should be added to HTML)
 // <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app-compat.js"></script>
 // <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-auth-compat.js"></script>
+// <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-firestore-compat.js"></script>
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -16,6 +17,7 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
+const db = firebase.firestore();
 
 // Export functions to window object
 window.createAccount = async (email, password, username) => {
@@ -35,9 +37,8 @@ window.createAccount = async (email, password, username) => {
       displayName: user.displayName // حفظ اسم المستخدم أيضاً
     }));
 
-    // حفظ معلومات المستخدم في Realtime Database
-    const database = firebase.database();
-    database.ref('users/' + user.uid).set({
+    // حفظ معلومات المستخدم في Firestore
+    await db.collection('users').doc(user.uid).set({
       username: username,
       email: email
     });
@@ -58,12 +59,14 @@ window.loginWithEmailAndPassword = async (email, password) => {
       email: user.email
     }));
 
-    // حفظ معلومات المستخدم في Realtime Database
-    const database = firebase.database();
-    database.ref('users/' + user.uid).set({
-      username: username,
-      email: email
-    });
+    // حفظ معلومات المستخدم في Firestore
+    // ملاحظة: عادة يتم حفظ بيانات المستخدم عند الإنشاء، ولكن سنقوم بتحديثها هنا أيضاً للمزامنة
+    await db.collection('users').doc(user.uid).set({
+      // يجب الحصول على اسم المستخدم من مكان ما عند تسجيل الدخول بالبريد الإلكتروني إذا لم يكن متاحاً مباشرة
+      // حالياً، سنفترض أنه يمكن الحصول عليه من user.displayName بعد التحديث الأول عند الإنشاء
+      username: user.displayName || 'N/A',
+      email: user.email
+    }, { merge: true }); // استخدم merge: true لتجنب الكتابة فوق الحقول الأخرى إذا كانت موجودة
 
     return userCredential;
   } catch (error) {
@@ -86,6 +89,14 @@ window.signInWithGoogle = async () => {
       displayName: user.displayName,
       photoURL: user.photoURL
     }));
+
+    // حفظ معلومات المستخدم في Firestore
+    await db.collection('users').doc(user.uid).set({
+      username: user.displayName,
+      email: user.email,
+      photoURL: user.photoURL
+    }, { merge: true }); // استخدم merge: true لتجنب الكتابة فوق الحقول الأخرى إذا كانت موجودة
+
     return result;
   } catch (error) {
     throw error;
