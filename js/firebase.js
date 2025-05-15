@@ -34,6 +34,14 @@ window.createAccount = async (email, password, username) => {
       email: user.email,
       displayName: user.displayName // حفظ اسم المستخدم أيضاً
     }));
+
+    // حفظ معلومات المستخدم في Realtime Database
+    const database = firebase.database();
+    database.ref('users/' + user.uid).set({
+      username: username,
+      email: email
+    });
+
     return userCredential;
   } catch (error) {
     throw error;
@@ -49,6 +57,14 @@ window.loginWithEmailAndPassword = async (email, password) => {
       uid: user.uid,
       email: user.email
     }));
+
+    // حفظ معلومات المستخدم في Realtime Database
+    const database = firebase.database();
+    database.ref('users/' + user.uid).set({
+      username: username,
+      email: email
+    });
+
     return userCredential;
   } catch (error) {
     throw error;
