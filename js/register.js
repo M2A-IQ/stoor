@@ -28,10 +28,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // معالجة إنشاء حساب
     registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+        e.stopPropagation();
         hideError();
         
         if (!registerForm.checkValidity()) {
-            e.stopPropagation();
             registerForm.classList.add('was-validated');
             return;
         }

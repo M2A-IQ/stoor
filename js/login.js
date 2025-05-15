@@ -11,9 +11,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // معالجة تسجيل الدخول
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+        e.stopPropagation();
         
         if (!loginForm.checkValidity()) {
-            e.stopPropagation();
             loginForm.classList.add('was-validated');
             return;
         }
