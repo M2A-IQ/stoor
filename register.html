@@ -169,34 +169,6 @@
         .password-toggle:hover {
             color: var(--primary-color);
         }
-
-        .btn-group {
-            width: 100%;
-            display: flex;
-            margin-bottom: 2rem;
-        }
-
-        .btn-group .btn {
-            flex: 1;
-            padding: 1rem;
-            font-size: 1.1rem;
-            border: 2px solid var(--primary-color);
-            background-color: white;
-            color: var(--primary-color);
-            transition: all 0.3s ease;
-        }
-
-        .btn-group .btn:hover {
-            background-color: var(--accent-color);
-            color: white;
-            border-color: var(--accent-color);
-        }
-
-        .btn-group .btn.active {
-            background-color: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
-        }
     </style>
 </head>
 <body>
@@ -208,11 +180,6 @@
             </div>
 
             <div id="errorMessage" class="error-message text-center"></div>
-
-            <div class="btn-group" role="group" aria-label="Authentication method">
-                <button type="button" class="btn btn-secondary active" id="loginToggleBtn">تسجيل الدخول</button>
-                <button type="button" class="btn btn-secondary" id="registerToggleBtn">إنشاء حساب</button>
-            </div>
 
             <!-- نموذج تسجيل الدخول -->
             <div id="loginFormContainer" class="auth-form-container">
@@ -237,35 +204,10 @@
                     <i class="fab fa-google"></i>
                     <span>تسجيل الدخول باستخدام جوجل</span>
                 </button>
-            </div>
 
-            <!-- نموذج إنشاء حساب جديد -->
-            <div id="registerFormContainer" class="auth-form-container" style="display: none;">
-                <form id="registerForm">
-                    <div class="form-floating">
-                        <input type="text" class="form-control" id="registerUsername" placeholder="اسم المستخدم" required>
-                        <label for="registerUsername">اسم المستخدم</label>
-                    </div>
-                    <div class="form-floating">
-                        <input type="email" class="form-control" id="registerEmail" placeholder="البريد الإلكتروني" required>
-                        <label for="registerEmail">البريد الإلكتروني</label>
-                    </div>
-                    <div class="form-floating position-relative">
-                        <input type="password" class="form-control" id="registerPassword" placeholder="كلمة المرور" required>
-                        <label for="registerPassword">كلمة المرور</label>
-                        <i class="fas fa-eye password-toggle" onclick="togglePassword('registerPassword')"></i>
-                    </div>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-user-plus me-2"></i>إنشاء حساب
-                    </button>
-                </form>
-
-                <div class="divider">أو</div>
-
-                <button class="btn btn-google google-login-btn">
-                    <i class="fab fa-google"></i>
-                    <span>تسجيل الدخول باستخدام جوجل</span>
-                </button>
+                <div class="text-center mt-3">
+                    <a href="#" id="showRegisterLink" class="text-primary text-decoration-none">ليس لديك حساب؟ أنشئ حساباً جديداً</a>
+                </div>
             </div>
         </div>
     </div>
@@ -312,55 +254,16 @@
             }
         });
 
-        // تبديل بين نماذج تسجيل الدخول وإنشاء الحساب
-        const loginToggleBtn = document.getElementById('loginToggleBtn');
-        const registerToggleBtn = document.getElementById('registerToggleBtn');
-        const loginFormContainer = document.getElementById('loginFormContainer');
-        const registerFormContainer = document.getElementById('registerFormContainer');
-
-        function showLoginForm() {
-            loginFormContainer.style.display = 'block';
-            registerFormContainer.style.display = 'none';
-            loginToggleBtn.classList.add('active');
-            registerToggleBtn.classList.remove('active');
-            document.querySelector('.auth-header h2').textContent = 'تسجيل الدخول';
-            document.querySelector('.auth-header p').textContent = 'قم بتسجيل الدخول للمتابعة إلى متجرنا';
-        }
-
-        function showRegisterForm() {
-            loginFormContainer.style.display = 'none';
-            registerFormContainer.style.display = 'block';
-            loginToggleBtn.classList.remove('active');
-            registerToggleBtn.classList.add('active');
-            document.querySelector('.auth-header h2').textContent = 'إنشاء حساب جديد';
-            document.querySelector('.auth-header p').textContent = 'أنشئ حسابك للمتابعة إلى متجرنا';
-        }
-
-        loginToggleBtn.addEventListener('click', showLoginForm);
-        registerToggleBtn.addEventListener('click', showRegisterForm);
-
-        // تسجيل الدخول باستخدام جوجل
-        document.querySelectorAll('.google-login-btn').forEach(button => {
-            button.addEventListener('click', async () => {
-                try {
-                    await window.signInWithGoogle();
-                    window.location.href = 'index.html';
-                } catch (error) {
-                    showError(error.message);
-                }
-            });
+        // الانتقال إلى صفحة إنشاء حساب جديد
+        document.getElementById('showRegisterLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.href = 'signup.html';
         });
 
-        // إنشاء حساب جديد
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('registerEmail').value;
-            const password = document.getElementById('registerPassword').value;
-
+        // تسجيل الدخول باستخدام جوجل
+        document.querySelector('.google-login-btn').addEventListener('click', async () => {
             try {
-                const username = document.getElementById('registerUsername').value;
-                await window.createAccount(email, password, username);
-                alert('تم إنشاء الحساب بنجاح!');
+                await window.signInWithGoogle();
                 window.location.href = 'index.html';
             } catch (error) {
                 showError(error.message);
@@ -380,7 +283,6 @@
                 showError(error.message);
             }
         });
-
     </script>
 </body>
 </html>
