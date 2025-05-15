@@ -89,6 +89,63 @@ function handleOrder(orderId, action) {
     }
 }
 
+// معالجة نموذج إعدادات المتجر
+document.addEventListener('DOMContentLoaded', function() {
+    const storeSettingsForm = document.getElementById('storeSettingsForm');
+    if (storeSettingsForm) {
+        storeSettingsForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // جمع البيانات من النموذج
+            const formData = new FormData(this);
+            // في التطبيق الحقيقي، سيتم إرسال البيانات إلى الخادم
+            saveStoreSettings(formData);
+        });
+    }
+
+    const paymentSettingsForm = document.getElementById('paymentSettingsForm');
+    if (paymentSettingsForm) {
+        paymentSettingsForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // جمع البيانات من النموذج
+            const formData = new FormData(this);
+            // في التطبيق الحقيقي، سيتم إرسال البيانات إلى الخادم
+            savePaymentSettings(formData);
+        });
+    }
+});
+
+// حفظ إعدادات المتجر
+function saveStoreSettings(formData) {
+    // محاكاة عملية الحفظ
+    setTimeout(() => {
+        showAlert('success', 'تم حفظ إعدادات المتجر بنجاح');
+    }, 1000);
+}
+
+// حفظ إعدادات الدفع والشحن
+function savePaymentSettings(formData) {
+    // محاكاة عملية الحفظ
+    setTimeout(() => {
+        showAlert('success', 'تم حفظ إعدادات الدفع والشحن بنجاح');
+    }, 1000);
+}
+
+// عرض رسالة تنبيه
+function showAlert(type, message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.querySelector('.container').insertBefore(alertDiv, document.querySelector('.row'));
+    
+    // إخفاء التنبيه تلقائياً بعد 3 ثواني
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 3000);
+}
+
 // دالة لإدارة المخزون
 function updateStock(productId, quantity) {
     // في التطبيق الحقيقي، سيتم إرسال الطلب إلى الخادم
