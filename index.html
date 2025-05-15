@@ -49,12 +49,17 @@
                     <a href="cart.html" class="btn btn-outline-light me-2">
                         <i class="fas fa-shopping-cart"></i> سلة التسوق <span class="badge bg-danger cart-count">0</span>
                     </a>
-                    <a href="login.html" class="btn btn-outline-light me-2">
-                        <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
-                    </a>
-                    <a href="register.html" class="btn btn-light">
-                        <i class="fas fa-user-plus"></i> إنشاء حساب
-                    </a>
+                    <div id="auth-buttons">
+                        <a href="login.html" class="btn btn-outline-light me-2" id="login-button">
+                            <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+                        </a>
+                        <a href="register.html" class="btn btn-light" id="register-button">
+                            <i class="fas fa-user-plus"></i> إنشاء حساب
+                        </a>
+                        <button class="btn btn-outline-light me-2 d-none" id="logout-button" onclick="confirmLogout()">
+                            <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -437,17 +442,25 @@
     // التحقق من حالة تسجيل الدخول عند تحميل الصفحة
     window.addEventListener('load', () => {
         const loginButton = document.getElementById('login-button');
-        const registerButton = document.getElementById('register-button');
         const logoutButton = document.getElementById('logout-button');
 
+        // التحقق من وجود معلومات المستخدم في localStorage
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user) {
+            loginButton.classList.add('d-none');
+            logoutButton.classList.remove('d-none');
+        } else {
+            loginButton.classList.remove('d-none');
+            logoutButton.classList.add('d-none');
+        }
+
+        // الاستماع لتغييرات حالة المصادقة
         window.checkAuthState((user) => {
             if (user) {
                 loginButton.classList.add('d-none');
-                registerButton.classList.add('d-none');
                 logoutButton.classList.remove('d-none');
             } else {
                 loginButton.classList.remove('d-none');
-                registerButton.classList.remove('d-none');
                 logoutButton.classList.add('d-none');
             }
         });
