@@ -374,7 +374,7 @@
             const password = document.getElementById('loginPassword').value;
 
             try {
-                await window.signIn(email, password);
+                await window.loginWithEmailAndPassword(email, password);
                 window.location.href = 'index.html';
             } catch (error) {
                 showError(error.message);
