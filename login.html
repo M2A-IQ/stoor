@@ -209,6 +209,10 @@
             <!-- نموذج إنشاء حساب جديد -->
             <form id="registerForm">
                 <div class="form-floating">
+                    <input type="text" class="form-control" id="registerUsername" placeholder="اسم المستخدم" required>
+                    <label for="registerUsername">اسم المستخدم</label>
+                </div>
+                <div class="form-floating">
                     <input type="email" class="form-control" id="registerEmail" placeholder="البريد الإلكتروني" required>
                     <label for="registerEmail">البريد الإلكتروني</label>
                 </div>
@@ -288,7 +292,8 @@
             const password = document.getElementById('registerPassword').value;
 
             try {
-                await window.createAccount(email, password);
+                const username = document.getElementById('registerUsername').value;
+                await window.createAccount(email, password, username);
                 alert('تم إنشاء الحساب بنجاح!');
                 window.location.href = 'index.html';
             } catch (error) {
