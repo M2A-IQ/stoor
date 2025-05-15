@@ -41,6 +41,13 @@ async function initRecaptcha() {
                     // إعادة تهيئة reCAPTCHA
                     recaptchaVerifier = null;
                     initRecaptcha();
+                },
+                'error-callback': () => {
+                    // حدث خطأ في التحقق
+                    console.error('reCAPTCHA error');
+                    // إعادة تهيئة reCAPTCHA
+                    recaptchaVerifier = null;
+                    initRecaptcha();
                 }
             });
             // تعطيل زر إرسال رمز التحقق حتى يتم حل reCAPTCHA
@@ -52,7 +59,7 @@ async function initRecaptcha() {
         return recaptchaVerifier;
     } catch (error) {
         console.error('خطأ في تهيئة reCAPTCHA:', error);
-        return null;
+        throw error;
     }
 }
 
@@ -63,21 +70,31 @@ export const loginWithPhoneAndPassword = async (phone) => {
         const formattedPhone = formatPhoneNumber(phone);
         
         // تهيئة reCAPTCHA
-        const verifier = initRecaptcha();
+        const verifier = await initRecaptcha();
+        if (!verifier) throw new Error('فشل في تهيئة reCAPTCHA');
         
         // إرسال رمز التحقق
         const confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, verifier);
         
-        // تخزين confirmationResult في localStorage للاستخدام لاحقاً
+        // تخزين confirmationResult في window object للاستخدام لاحقاً
         window.confirmationResult = confirmationResult;
         
         // إظهار نموذج إدخال رمز التحقق
-        document.getElementById('verificationCodeForm').classList.remove('d-none');
-        document.getElementById('loginForm').classList.add('d-none');
+        const verificationForm = document.getElementById('verificationCodeForm');
+        const loginForm = document.getElementById('loginForm');
+        
+        if (verificationForm && loginForm) {
+            verificationForm.classList.remove('d-none');
+            loginForm.classList.add('d-none');
+        } else {
+            throw new Error('لم يتم العثور على نماذج التحقق');
+        }
         
         return confirmationResult;
     } catch (error) {
         console.error('خطأ في إرسال رمز التحقق:', error);
+        // إعادة تهيئة reCAPTCHA في حالة الفشل
+        recaptchaVerifier = null;
         throw error;
     }
 };
