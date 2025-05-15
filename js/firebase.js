@@ -18,14 +18,21 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
 // Export functions to window object
-window.createAccount = async (email, password) => {
+window.createAccount = async (email, password, username) => {
   try {
     const userCredential = await auth.createUserWithEmailAndPassword(email, password);
     const user = userCredential.user;
+    
+    // تحديث ملف تعريف المستخدم بإضافة اسم المستخدم
+    await user.updateProfile({
+      displayName: username
+    });
+
     // حفظ معلومات المستخدم في localStorage
     localStorage.setItem('user', JSON.stringify({
       uid: user.uid,
-      email: user.email
+      email: user.email,
+      displayName: user.displayName // حفظ اسم المستخدم أيضاً
     }));
     return userCredential;
   } catch (error) {
