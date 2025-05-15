@@ -20,81 +20,52 @@ const auth = getAuth(app);
 const analytics = getAnalytics(app);
 
 // تهيئة RecaptchaVerifier
-let recaptchaVerifier;
-
-// دالة تهيئة RecaptchaVerifier
-async function initRecaptcha() {
-    try {
-        if (!recaptchaVerifier) {
-            recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-                'size': 'normal',
-                'callback': (response) => {
-                    // تم التحقق بنجاح
-                    console.log('reCAPTCHA solved');
-                    // تفعيل زر إرسال رمز التحقق
-                    const loginButton = document.getElementById('loginButton');
-                    if (loginButton) loginButton.disabled = false;
-                },
-                'expired-callback': () => {
-                    // انتهت صلاحية التحقق
-                    console.log('reCAPTCHA expired');
-                    // إعادة تهيئة reCAPTCHA
-                    recaptchaVerifier = null;
-                    initRecaptcha();
-                },
-                'error-callback': () => {
-                    // حدث خطأ في التحقق
-                    console.error('reCAPTCHA error');
-                    // إعادة تهيئة reCAPTCHA
-                    recaptchaVerifier = null;
-                    initRecaptcha();
-                }
-            });
-            // تعطيل زر إرسال رمز التحقق حتى يتم حل reCAPTCHA
-            const loginButton = document.getElementById('loginButton');
-            if (loginButton) loginButton.disabled = true;
-            
-            await recaptchaVerifier.render();
-        }
-        return recaptchaVerifier;
-    } catch (error) {
-        console.error('خطأ في تهيئة reCAPTCHA:', error);
-        throw error;
+window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
+    size: 'normal',
+    callback: response => {
+        console.log('reCAPTCHA solved');
+        const loginButton = document.getElementById('loginButton');
+        if (loginButton) loginButton.disabled = false;
+    },
+    'expired-callback': () => {
+        console.log('reCAPTCHA expired');
+        window.recaptchaVerifier = null;
+        const loginButton = document.getElementById('loginButton');
+        if (loginButton) loginButton.disabled = true;
     }
+}, auth);
+
+// دالة تنسيق رقم الهاتف
+function formatPhoneNumber(phone) {
+    const cleaned = phone.replace(/\D/g, '');
+    return `+964${cleaned}`;
 }
 
 // دالة تسجيل الدخول باستخدام رقم الهاتف
 export const loginWithPhoneAndPassword = async (phone) => {
     try {
-        // تنسيق رقم الهاتف
         const formattedPhone = formatPhoneNumber(phone);
-        
-        // تهيئة reCAPTCHA
-        const verifier = await initRecaptcha();
-        if (!verifier) throw new Error('فشل في تهيئة reCAPTCHA');
-        
-        // إرسال رمز التحقق
-        const confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, verifier);
-        
-        // تخزين confirmationResult في window object للاستخدام لاحقاً
+        const appVerifier = window.recaptchaVerifier;
+
+        const confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
         window.confirmationResult = confirmationResult;
-        
-        // إظهار نموذج إدخال رمز التحقق
+
         const verificationForm = document.getElementById('verificationCodeForm');
         const loginForm = document.getElementById('loginForm');
-        
+
         if (verificationForm && loginForm) {
             verificationForm.classList.remove('d-none');
             loginForm.classList.add('d-none');
+            alert('تم إرسال الرمز');
         } else {
             throw new Error('لم يتم العثور على نماذج التحقق');
         }
-        
+
         return confirmationResult;
     } catch (error) {
         console.error('خطأ في إرسال رمز التحقق:', error);
-        // إعادة تهيئة reCAPTCHA في حالة الفشل
-        recaptchaVerifier = null;
+        alert('خطأ في الإرسال: ' + error.message);
+        window.recaptchaVerifier = null;
         throw error;
     }
 };
@@ -107,8 +78,8 @@ export const verifyCode = async (code) => {
             throw new Error('لم يتم إرسال رمز التحقق');
         }
 
-        const userCredential = await confirmationResult.confirm(code);
-        const user = userCredential.user;
+        const result = await confirmationResult.confirm(code);
+        const user = result.user;
 
         // التحقق من رقم الهاتف للمسؤول
         const isAdmin = user.phoneNumber === '+9647727139210';
@@ -123,6 +94,8 @@ export const verifyCode = async (code) => {
             lastLogin: new Date().toISOString()
         }));
 
+        alert('تم تسجيل الدخول بنجاح');
+
         // إعادة توجيه المستخدم حسب صلاحياته
         if (isAdmin) {
             window.location.href = '/admin/dashboard.html';
@@ -133,26 +106,16 @@ export const verifyCode = async (code) => {
         return user;
     } catch (error) {
         console.error('خطأ في التحقق من الرمز:', error);
+        alert('الرمز غير صحيح');
         throw error;
     }
 };
-
-// دالة تنسيق رقم الهاتف
-function formatPhoneNumber(phone) {
-    // إزالة أي أحرف غير رقمية
-    const cleaned = phone.replace(/\D/g, '');
-    
-    // إضافة رمز الدولة
-    return `+964${cleaned}`;
-}
 
 // دالة تسجيل الخروج
 export const logoutUser = async () => {
     try {
         await signOut(auth);
-        // حذف معلومات المستخدم من localStorage
         localStorage.removeItem('user');
-        // إعادة توجيه المستخدم إلى صفحة تسجيل الدخول
         window.location.href = '/login.html';
     } catch (error) {
         console.error('خطأ في تسجيل الخروج:', error);
@@ -165,10 +128,8 @@ export const checkAuthState = () => {
     return new Promise((resolve, reject) => {
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // المستخدم مسجل الدخول
                 resolve(user);
             } else {
-                // المستخدم غير مسجل الدخول
                 reject('لم يتم تسجيل الدخول');
             }
         });
@@ -181,14 +142,9 @@ export const checkAdminAuth = async () => {
         const user = await checkAuthState();
         if (!user) throw new Error('لم يتم تسجيل الدخول');
 
-        // التحقق من رقم الهاتف للمسؤول
         const isAdmin = user.phoneNumber === '+9647727139210';
+        if (!isAdmin) throw new Error('غير مصرح بالوصول');
 
-        if (!isAdmin) {
-            throw new Error('غير مصرح بالوصول');
-        }
-
-        // تحديث وقت آخر تحقق
         const userData = JSON.parse(localStorage.getItem('user'));
         localStorage.setItem('user', JSON.stringify({
             ...userData,
@@ -198,32 +154,7 @@ export const checkAdminAuth = async () => {
         return true;
     } catch (error) {
         console.error('خطأ في التحقق من الصلاحيات:', error);
-        // إعادة توجيه المستخدم إلى صفحة تسجيل الدخول
         window.location.href = '/login.html';
-        throw error;
-    }
-};
-
-// دالة تحديث معلومات المستخدم
-export const updateUserProfile = async (userData) => {
-    try {
-        const user = auth.currentUser;
-        if (user) {
-            // تحديث معلومات المستخدم في Firebase
-            await user.updateProfile(userData);
-            
-            // تحديث المعلومات في localStorage
-            const currentData = JSON.parse(localStorage.getItem('user'));
-            localStorage.setItem('user', JSON.stringify({
-                ...currentData,
-                ...userData
-            }));
-            
-            return true;
-        }
-        throw new Error('لم يتم العثور على المستخدم');
-    } catch (error) {
-        console.error('خطأ في تحديث الملف الشخصي:', error);
         throw error;
     }
 };
