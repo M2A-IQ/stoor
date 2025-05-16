@@ -109,9 +109,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // معالجة التبديل إلى صفحة إنشاء حساب
-    const registerToggleBtn = document.getElementById('registerToggleBtn');
-    if (registerToggleBtn) {
-        registerToggleBtn.addEventListener('click', () => {
+    const createAccountLink = document.getElementById('createAccountLink');
+    if (createAccountLink) {
+        createAccountLink.addEventListener('click', (e) => {
+            e.preventDefault(); // منع الانتقال الافتراضي للرابط
             window.location.href = 'register.html';
         });
     }
