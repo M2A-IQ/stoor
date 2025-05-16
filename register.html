@@ -256,13 +256,34 @@
         // إنشاء حساب باستخدام جوجل
         document.querySelector('.google-login-btn').addEventListener('click', async () => {
             try {
+                const button = document.querySelector('.google-login-btn');
+                button.disabled = true;
+                button.innerHTML = `
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    <span>جاري التحويل...</span>
+                `;
+
                 const { data, error } = await supabase.auth.signInWithOAuth({
-                    provider: 'google'
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.origin + '/index.html',
+                        queryParams: {
+                            access_type: 'offline',
+                            prompt: 'consent'
+                        }
+                    }
                 });
+
                 if (error) throw error;
-                window.location.href = 'index.html';
+
             } catch (error) {
                 showError(error.message);
+                const button = document.querySelector('.google-login-btn');
+                button.disabled = false;
+                button.innerHTML = `
+                    <i class="fab fa-google"></i>
+                    <span>إنشاء حساب باستخدام جوجل</span>
+                `;
             }
         });
 
