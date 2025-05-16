@@ -1,10 +1,10 @@
 // وظائف إدارة الأقسام
 
-// تهيئة Firebase
-const categoriesRef = firebase.firestore().collection('categories');
+// تهيئة التخزين المحلي للأقسام
+let categories = JSON.parse(localStorage.getItem('categories')) || [];
 
 // دالة لإضافة قسم جديد
-async function addCategory(event) {
+function addCategory(event) {
     event.preventDefault();
     
     const nameInput = document.getElementById('categoryName');
@@ -13,15 +13,17 @@ async function addCategory(event) {
     
     try {
         const newCategory = {
+            id: Date.now().toString(),
             name: nameInput.value,
             description: descriptionInput.value,
             icon: iconInput.value,
             productCount: 0,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
         };
 
-        await categoriesRef.add(newCategory);
+        categories.push(newCategory);
+        localStorage.setItem('categories', JSON.stringify(categories));
         
         // إغلاق النافذة المنبثقة وإعادة تحميل الأقسام
         const modal = bootstrap.Modal.getInstance(document.getElementById('addCategoryModal'));
@@ -40,15 +42,16 @@ async function addCategory(event) {
 }
 
 // دالة لتحميل الأقسام
-async function loadCategories() {
+function loadCategories() {
     try {
-        const snapshot = await categoriesRef.orderBy('createdAt', 'desc').get();
+        categories = JSON.parse(localStorage.getItem('categories')) || [];
+        const sortedCategories = categories.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        
         const categoriesContainer = document.querySelector('.row.g-4');
         categoriesContainer.innerHTML = '';
         
-        snapshot.forEach(doc => {
-            const category = doc.data();
-            const categoryElement = createCategoryElement(doc.id, category);
+        sortedCategories.forEach(category => {
+            const categoryElement = createCategoryElement(category.id, category);
             categoriesContainer.appendChild(categoryElement);
         });
     } catch (error) {
@@ -94,10 +97,10 @@ function createCategoryElement(id, category) {
 }
 
 // دالة لتعديل قسم
-async function editCategory(id) {
+function editCategory(id) {
     try {
-        const doc = await categoriesRef.doc(id).get();
-        const category = doc.data();
+        const category = categories.find(c => c.id === id);
+        if (!category) throw new Error('القسم غير موجود');
         
         // تعبئة نموذج التعديل
         document.getElementById('editCategoryId').value = id;
@@ -115,7 +118,7 @@ async function editCategory(id) {
 }
 
 // دالة لحفظ تعديلات القسم
-async function saveCategory(event) {
+function saveCategory(event) {
     event.preventDefault();
     
     const id = document.getElementById('editCategoryId').value;
@@ -124,12 +127,18 @@ async function saveCategory(event) {
     const iconInput = document.getElementById('editCategoryIcon');
     
     try {
-        await categoriesRef.doc(id).update({
+        const categoryIndex = categories.findIndex(c => c.id === id);
+        if (categoryIndex === -1) throw new Error('القسم غير موجود');
+        
+        categories[categoryIndex] = {
+            ...categories[categoryIndex],
             name: nameInput.value,
             description: descriptionInput.value,
             icon: iconInput.value,
-            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
+            updatedAt: new Date().toISOString()
+        };
+        
+        localStorage.setItem('categories', JSON.stringify(categories));
         
         // إغلاق النافذة المنبثقة وإعادة تحميل الأقسام
         const modal = bootstrap.Modal.getInstance(document.getElementById('editCategoryModal'));
