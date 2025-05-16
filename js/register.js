@@ -1,6 +1,23 @@
 import { createAccount, signInWithGoogle } from './firebase.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+    // التحقق من وجود المستخدم في localStorage
+    const userData = JSON.parse(localStorage.getItem('user'));
+    const welcomeMessage = document.getElementById('welcomeMessage');
+    
+    // إخفاء رسالة الترحيب إذا لم يكن هناك مستخدم مسجل
+    if (!userData || !userData.email) {
+        welcomeMessage?.classList.add('d-none');
+    }
+    // إزالة صف show-validation من جميع الحقول عند تحميل الصفحة
+    document.querySelectorAll('.form-control').forEach(input => {
+        input.classList.remove('show-validation');
+        // إضافة مستمع لحدث الإدخال لإزالة الصف عند تغيير القيمة
+        input.addEventListener('input', () => {
+            input.classList.remove('show-validation');
+        });
+    });
+
     const registerForm = document.getElementById('registerForm');
     const registerButton = document.getElementById('registerButton');
     const spinner = registerButton.querySelector('.spinner-border');
@@ -33,6 +50,10 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (!registerForm.checkValidity()) {
             registerForm.classList.add('was-validated');
+            // إضافة الصف show-validation لجميع حقول الإدخال
+            registerForm.querySelectorAll('.form-control').forEach(input => {
+                input.classList.add('show-validation');
+            });
             return;
         }
 
@@ -73,14 +94,19 @@ document.addEventListener('DOMContentLoaded', () => {
             
             console.log('تحديث معلومات المستخدم...');
             // تحديث معلومات المستخدم في localStorage
-            const userData = JSON.parse(localStorage.getItem('user'));
-            localStorage.setItem('user', JSON.stringify({
+            const userData = JSON.parse(localStorage.getItem('user')) || {};
+            const updatedUserData = {
                 ...userData,
                 displayName: `${firstName} ${lastName}`,
                 firstName: firstName,
-                lastName: lastName
-            }));
+                lastName: lastName,
+                email: email
+            };
+            localStorage.setItem('user', JSON.stringify(updatedUserData));
             console.log('تم تحديث معلومات المستخدم بنجاح');
+            
+            // توجيه المستخدم إلى الصفحة الرئيسية
+            window.location.href = 'index.html';
         } catch (error) {
             // معالجة الأخطاء
             let errorMessage = 'حدث خطأ أثناء إنشاء الحساب';
