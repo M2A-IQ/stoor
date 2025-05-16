@@ -409,24 +409,27 @@
 
                 if (!signInError || (signInError.message && signInError.message.includes('Invalid login credentials'))) {
                     // إظهار تنبيه أن الحساب موجود مسبقاً
-                    const alertHtml = `
-                        <div class="alert custom-alert fade show" role="alert">
-                            <div class="alert-content">
-                                <div class="alert-icon">
-                                    <i class="fas fa-user-check fa-2x"></i>
+                    const welcomeMessage = document.getElementById('welcomeMessage');
+                    if (welcomeMessage) {
+                        welcomeMessage.classList.remove('d-none');
+                        welcomeMessage.scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                        const alertHtml = `
+                            <div class="welcome-message mb-4 d-flex align-items-center justify-content-between" id="welcomeMessage">
+                                <div class="d-flex align-items-center">
+                                    <span class="wave-emoji">👋</span>
+                                    <div class="ms-2">
+                                        <h5 class="mb-0">مرحباً بعودتك!</h5>
+                                        <p class="text-muted mb-0">يبدو أن لديك حساباً بالفعل بهذا البريد الإلكتروني.</p>
+                                    </div>
                                 </div>
-                                <div class="alert-text">
-                                    <h4 class="alert-heading">مرحباً بعودتك! 👋</h4>
-                                    <p>يبدو أن لديك حساباً بالفعل بهذا البريد الإلكتروني.</p>
-                                    <a href="login.html" class="btn btn-primary btn-sm mt-2">
-                                        <i class="fas fa-sign-in-alt me-2"></i>تسجيل الدخول
-                                    </a>
-                                </div>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <button type="button" class="btn btn-primary" id="loginRedirectBtn" onclick="window.location.href='login.html'">
+                                    ➜ تسجيل الدخول
+                                </button>
                             </div>
-                        </div>
-                    `;
-                    document.querySelector('#registerForm').insertAdjacentHTML('beforebegin', alertHtml);
+                        `;
+                        document.querySelector('#registerForm').insertAdjacentHTML('beforebegin', alertHtml);
+                    }
                     
                     // إعادة تفعيل الزر
                     button.disabled = false;
