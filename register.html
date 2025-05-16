@@ -351,31 +351,45 @@
             });
         });
 
-        // إنشاء حساب جديد
+        // إنشاء حساب جديد باستخدام Supabase
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('registerEmail').value;
             const password = document.getElementById('registerPassword').value;
 
             try {
-                const username = document.getElementById('registerUsername').value;
-                await window.createAccount(email, password, username);
-                alert('تم إنشاء الحساب بنجاح!');
-                window.location.href = 'index.html';
+                // لا يوجد حقل اسم مستخدم مباشر في تسجيل Supabase الأساسي، يمكن إضافته لاحقًا كبيانات وصفية للمستخدم أو في جدول منفصل
+                const { data, error } = await auth.signUp(email, password);
+
+                if (error) {
+                    throw error;
+                }
+
+                alert('تم إنشاء الحساب بنجاح! يرجى التحقق من بريدك الإلكتروني للتأكيد.');
+                // قد تحتاج إلى توجيه المستخدم إلى صفحة أخرى أو إظهار رسالة تأكيد
+                // window.location.href = 'index.html'; // التوجيه بعد التأكيد عبر البريد الإلكتروني
+
             } catch (error) {
                 showError(error.message);
             }
         });
 
-        // معالجة نموذج تسجيل الدخول
+        // معالجة نموذج تسجيل الدخول باستخدام Supabase
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
 
             try {
-                await window.loginWithEmailAndPassword(email, password);
+                const { data, error } = await auth.signIn(email, password);
+
+                if (error) {
+                    throw error;
+                }
+
+                // التوجيه بعد تسجيل الدخول بنجاح
                 window.location.href = 'index.html';
+
             } catch (error) {
                 showError(error.message);
             }

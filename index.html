@@ -457,7 +457,7 @@
         }
 
         // التحقق من حالة المصادقة وعرض اسم المستخدم
-        window.checkAuthState((user) => {
+        auth.onAuthStateChange((event, session) => {
             const loginButton = document.getElementById('login-button');
             const logoutButton = document.getElementById('logout-button');
             const usernameDisplay = document.getElementById('username-display');
@@ -479,12 +479,16 @@
     });
 
     // دالة تأكيد تسجيل الخروج
-    function confirmLogout() {
+    async function confirmLogout() {
         if (confirm('هل أنت متأكد من رغبتك في تسجيل الخروج؟')) {
-            window.logoutUser().then(() => {
+            try {
+                const { error } = await auth.signOut();
+                if (error) throw error;
                 // إعادة تحميل الصفحة بعد تسجيل الخروج
                 window.location.reload();
-            }).catch((error) => {
+            } catch (error) {
+                console.error('خطأ في تسجيل الخروج:', error);
+
                 console.error('خطأ في تسجيل الخروج:', error);
                 alert('حدث خطأ أثناء تسجيل الخروج. الرجاء المحاولة مرة أخرى.');
             });
