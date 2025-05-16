@@ -355,40 +355,48 @@
                     verificationModal.show();
                     
                     document.getElementById('checkVerificationBtn').addEventListener('click', async () => {
-                        const btn = document.getElementById('checkVerificationBtn');
-                        const statusDiv = document.getElementById('verificationStatus');
-                        
-                        btn.disabled = true;
-                        btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>جاري التحقق...`;
-                        
-                        try {
-                            const { data: { session }, error } = await supabase.auth.getSession();
-                            
-                            if (session) {
-                                statusDiv.className = 'alert alert-success';
-                                statusDiv.textContent = 'تم تأكيد حسابك بنجاح! جاري تحويلك إلى المتجر...';
-                                statusDiv.classList.remove('d-none');
-                                
-                                setTimeout(() => {
-                                    window.location.href = 'index.html';
-                                }, 1500);
-                            } else {
-                                statusDiv.className = 'alert alert-warning';
-                                statusDiv.textContent = 'لم يتم تأكيد حسابك بعد. يرجى التحقق من بريدك الإلكتروني والضغط على رابط التأكيد.';
-                                statusDiv.classList.remove('d-none');
-                                
-                                btn.disabled = false;
-                                btn.innerHTML = `<i class="fas fa-sync-alt me-2"></i>التحقق من حالة التأكيد`;
-                            }
-                        } catch (error) {
-                            statusDiv.className = 'alert alert-danger';
-                            statusDiv.textContent = 'حدث خطأ أثناء التحقق من حالة حسابك. يرجى المحاولة مرة أخرى.';
-                            statusDiv.classList.remove('d-none');
-                            
-                            btn.disabled = false;
-                            btn.innerHTML = `<i class="fas fa-sync-alt me-2"></i>التحقق من حالة التأكيد`;
-                        }
-                    });
+                         const btn = document.getElementById('checkVerificationBtn');
+                         const statusDiv = document.getElementById('verificationStatus');
+                         const email = document.getElementById('registerEmail').value;
+                         
+                         btn.disabled = true;
+                         btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>جاري التحقق...`;
+                         
+                         try {
+                             const { data: { session }, error } = await supabase.auth.getSession();
+                             
+                             if (session) {
+                                 statusDiv.className = 'alert alert-success';
+                                 statusDiv.textContent = 'تم تأكيد حسابك بنجاح! جاري تحويلك إلى المتجر...';
+                                 statusDiv.classList.remove('d-none');
+                                 
+                                 setTimeout(() => {
+                                     window.location.href = 'index.html';
+                                 }, 1500);
+                             } else {
+                                 // إعادة إرسال رابط التأكيد
+                                 const { error: resendError } = await supabase.auth.resend({
+                                     type: 'signup',
+                                     email: email
+                                 });
+
+                                 if (resendError) {
+                                     throw resendError;
+                                 }
+
+                                 statusDiv.className = 'alert alert-warning';
+                                 statusDiv.textContent = 'تم إعادة إرسال رابط التأكيد إلى بريدك الإلكتروني. يرجى التحقق من بريدك والضغط على الرابط.';
+                                 statusDiv.classList.remove('d-none');
+                             }
+                         } catch (error) {
+                             statusDiv.className = 'alert alert-danger';
+                             statusDiv.textContent = 'حدث خطأ أثناء التحقق من حالة حسابك. يرجى المحاولة مرة أخرى.';
+                             statusDiv.classList.remove('d-none');
+                         } finally {
+                             btn.disabled = false;
+                             btn.innerHTML = `<i class="fas fa-sync-alt me-2"></i>التحقق من حالة التأكيد`;
+                         }
+                     });
                 }
 
             } catch (error) {
