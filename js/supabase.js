@@ -14,7 +14,17 @@ export const auth = {
       email,
       password
     })
-    return { data, error }
+    
+    if (error) {
+      console.error('حدث خطأ أثناء التسجيل:', error.message)
+      throw error
+    }
+    
+    if (!data.session) {
+      return { message: 'تم إرسال رسالة تأكيد إلى بريدك الإلكتروني. يرجى التحقق.' }
+    }
+    
+    return { message: 'تم التسجيل والدخول بنجاح', data }
   },
 
   // تسجيل الدخول
