@@ -12,6 +12,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
     <script src="js/firebase.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/index.js"></script>
     <script>
         // تهيئة Supabase
         const supabaseUrl = 'https://rdpiavjnubfjdikrphcy.supabase.co';
@@ -68,7 +69,10 @@
                         <button class="btn btn-outline-light me-2 d-none" id="logout-button" onclick="confirmLogout()">
                             <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
                         </button>
-                        <span class="navbar-text me-2 text-white d-none fw-bold" id="username-display"></span>
+                        <span class="navbar-text me-2 text-white d-none fw-bold" id="username-display">
+                            <i class="fas fa-user me-1"></i>
+                            <span class="username-text"></span>
+                        </span>
                     </div>
                 </div>
             </div>
