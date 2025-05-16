@@ -1,19 +1,37 @@
 // وظائف عرض الأقسام في الواجهة الأمامية
 
+// استيراد وتهيئة Firebase
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, query, orderBy, getDocs } from 'firebase/firestore';
+
+// تكوين Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyDJ_tmqg6FZYTa2tNnmfJZYD_xcBMXSX9I",
+  authDomain: "stor-57fed.firebaseapp.com",
+  projectId: "stor-57fed",
+  storageBucket: "stor-57fed.firebasestorage.app",
+  messagingSenderId: "500181738580",
+  appId: "1:500181738580:web:0639ab36efedbb1f3479c1",
+  measurementId: "G-LW9RNCXX5N"
+};
+
 // تهيئة Firebase
-const categoriesRef = firebase.firestore().collection('categories');
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const categoriesRef = collection(db, 'categories');
 
 // دالة لتحميل الأقسام
 async function loadCategories() {
     try {
-        const snapshot = await categoriesRef.orderBy('createdAt', 'desc').get();
+        const q = query(categoriesRef, orderBy('createdAt', 'desc'));
+        const querySnapshot = await getDocs(q);
         const categoriesList = document.getElementById('categoriesList');
         
         if (!categoriesList) return;
         
         categoriesList.innerHTML = '';
         
-        if (snapshot.empty) {
+        if (querySnapshot.empty) {
             categoriesList.innerHTML = `
                 <div class="col-12 text-center">
                     <p class="text-muted">لا توجد أقسام متاحة حالياً</p>
@@ -22,11 +40,11 @@ async function loadCategories() {
             return;
         }
         
-        snapshot.forEach(doc => {
+        querySnapshot.forEach(doc => {
             const category = doc.data();
             const categoryElement = createCategoryElement(doc.id, category);
             categoriesList.appendChild(categoryElement);
-        });
+        })
     } catch (error) {
         console.error('خطأ في تحميل الأقسام:', error);
         const categoriesList = document.getElementById('categoriesList');
