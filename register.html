@@ -394,8 +394,9 @@
                               }
                           } catch (error) {
                               statusDiv.className = 'alert alert-danger';
-                              statusDiv.textContent = 'حدث خطأ أثناء التحقق من حالة حسابك. يرجى المحاولة مرة أخرى.';
+                              statusDiv.textContent = 'حدث خطأ أثناء التحقق من حالة حسابك. يرجى التأكد من اتصالك بالإنترنت والمحاولة مرة أخرى.';
                               statusDiv.classList.remove('d-none');
+                              console.error('خطأ في التحقق من حالة الحساب:', error);
                               console.error(error);
                           } finally {
                               btn.disabled = false;
