@@ -408,29 +408,7 @@
                 });
 
                 if (!signInError || (signInError.message && signInError.message.includes('Invalid login credentials'))) {
-                    // إظهار تنبيه أن الحساب موجود مسبقاً
-                    const welcomeMessage = document.getElementById('welcomeMessage');
-                    if (welcomeMessage) {
-                        welcomeMessage.classList.remove('d-none');
-                        welcomeMessage.scrollIntoView({ behavior: 'smooth' });
-                    } else {
-                        const alertHtml = `
-                            <div class="welcome-message mb-4 d-flex align-items-center justify-content-between" id="welcomeMessage">
-                                <div class="d-flex align-items-center">
-                                    <span class="wave-emoji">👋</span>
-                                    <div class="ms-2">
-                                        <h5 class="mb-0">مرحباً بعودتك!</h5>
-                                        <p class="text-muted mb-0">يبدو أن لديك حساباً بالفعل بهذا البريد الإلكتروني.</p>
-                                    </div>
-                                </div>
-                                <button type="button" class="btn btn-primary" id="loginRedirectBtn" onclick="window.location.href='login.html'">
-                                    ➜ تسجيل الدخول
-                                </button>
-                            </div>
-                        `;
-                        document.querySelector('#registerForm').insertAdjacentHTML('beforebegin', alertHtml);
-                    }
-                    
+                    showError('البريد الإلكتروني مستخدم بالفعل');
                     // إعادة تفعيل الزر
                     button.disabled = false;
                     spinner.classList.add('d-none');
