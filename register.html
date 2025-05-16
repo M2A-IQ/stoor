@@ -308,6 +308,30 @@
                 spinner.classList.remove('d-none');
                 btnText.classList.add('opacity-0');
 
+                // التحقق من وجود البريد الإلكتروني
+                const { data: existingUser, error: signInError } = await supabase.auth.signInWithPassword({
+                    email,
+                    password: 'dummy-password-for-check'
+                });
+
+                if (!signInError || (signInError.message && signInError.message.includes('Invalid login credentials'))) {
+                    // إظهار تنبيه أن الحساب موجود مسبقاً
+                    const alertHtml = `
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>تنبيه!</strong> هذا البريد الإلكتروني مسجل مسبقاً. هل تريد تسجيل الدخول؟
+                            <a href="login.html" class="btn btn-link">انتقل إلى صفحة تسجيل الدخول</a>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    `;
+                    document.querySelector('#registerForm').insertAdjacentHTML('beforebegin', alertHtml);
+                    
+                    // إعادة تفعيل الزر
+                    button.disabled = false;
+                    spinner.classList.add('d-none');
+                    btnText.classList.remove('opacity-0');
+                    return;
+                }
+
                 const { data, error } = await supabase.auth.signUp({
                     email,
                     password,
@@ -363,11 +387,20 @@
                           btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>جاري التحقق...`;
                           
                           try {
-                              const { data: { user }, error } = await supabase.auth.getUser();
+                              let attempts = 0;
+                              const maxAttempts = 3;
                               
-                              if (error) {
-                                  throw error;
-                              }
+                              while (attempts < maxAttempts) {
+                                  try {
+                                      const { data: { user }, error } = await supabase.auth.getUser();
+                                      
+                                      if (error) {
+                                          throw error;
+                                      }
+                                      
+                                      // إذا نجح الاتصال، نخرج من الحلقة
+                                      attempts = maxAttempts;
+
                               
                               if (user?.email_confirmed_at) {
                                   statusDiv.className = 'alert alert-success';
@@ -392,12 +425,24 @@
                                   statusDiv.textContent = 'لم يتم تأكيد بريدك الإلكتروني بعد. تم إرسال رابط تأكيد جديد، يرجى التحقق من بريدك.';
                                   statusDiv.classList.remove('d-none');
                               }
+                                  } catch (error) {
+                                      attempts++;
+                                      if (attempts >= maxAttempts) {
+                                          statusDiv.className = 'alert alert-danger';
+                                          statusDiv.textContent = 'فشلت محاولات الاتصال. يرجى التأكد من اتصالك بالإنترنت والمحاولة مرة أخرى.';
+                                          statusDiv.classList.remove('d-none');
+                                          console.error('خطأ في التحقق من حالة الحساب:', error);
+                                          break;
+                                      }
+                                      // انتظار قبل المحاولة التالية
+                                      await new Promise(resolve => setTimeout(resolve, 1000));
+                                  }
+                              }
                           } catch (error) {
                               statusDiv.className = 'alert alert-danger';
-                              statusDiv.textContent = 'حدث خطأ أثناء التحقق من حالة حسابك. يرجى التأكد من اتصالك بالإنترنت والمحاولة مرة أخرى.';
+                              statusDiv.textContent = 'حدث خطأ أثناء التحقق من حالة حسابك. يرجى المحاولة مرة أخرى لاحقاً.';
                               statusDiv.classList.remove('d-none');
                               console.error('خطأ في التحقق من حالة الحساب:', error);
-                              console.error(error);
                           } finally {
                               btn.disabled = false;
                               btn.innerHTML = `<i class="fas fa-sync-alt me-2"></i>التحقق من حالة التأكيد`;
