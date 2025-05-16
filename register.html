@@ -407,7 +407,7 @@
                     password: 'dummy-password-for-check'
                 });
 
-                if (!signInError || (signInError.message && signInError.message.includes('Invalid login credentials'))) {
+                if (signInError && signInError.message !== 'Invalid login credentials') {
                     showError('البريد الإلكتروني مستخدم بالفعل');
                     // إعادة تفعيل الزر
                     button.disabled = false;
