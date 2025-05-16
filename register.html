@@ -303,15 +303,8 @@
                 spinner.classList.remove('d-none');
                 btnText.classList.add('opacity-0');
 
-                const { data, error } = await supabase.auth.signUp({
-                    email,
-                    password,
-                    options: {
-                        data: {
-                            username: username
-                        }
-                    }
-                });
+                const { data, error } = await auth.signUp(email, password);
+
 
                 if (error) throw error;
 
