@@ -324,7 +324,71 @@
                 if (data.session) {
                     window.location.href = 'index.html';
                 } else {
-                    alert('تم إنشاء الحساب بنجاح! يرجى التحقق من بريدك الإلكتروني للتأكيد.');
+                    const modalHtml = `
+                        <div class="modal fade" id="verificationModal" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">التحقق من البريد الإلكتروني</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body text-center">
+                                        <i class="fas fa-envelope-open-text fa-3x text-primary mb-3"></i>
+                                        <p>تم إرسال رابط التحقق إلى بريدك الإلكتروني. يرجى التحقق من بريدك الإلكتروني وتأكيد حسابك.</p>
+                                        <div id="verificationStatus" class="alert d-none"></div>
+                                    </div>
+                                    <div class="modal-footer justify-content-center">
+                                        <button type="button" class="btn btn-primary" id="checkVerificationBtn">
+                                            <i class="fas fa-sync-alt me-2"></i>التحقق من حالة التأكيد
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    if (!document.getElementById('verificationModal')) {
+                        document.body.insertAdjacentHTML('beforeend', modalHtml);
+                    }
+                    
+                    const verificationModal = new bootstrap.Modal(document.getElementById('verificationModal'));
+                    verificationModal.show();
+                    
+                    document.getElementById('checkVerificationBtn').addEventListener('click', async () => {
+                        const btn = document.getElementById('checkVerificationBtn');
+                        const statusDiv = document.getElementById('verificationStatus');
+                        
+                        btn.disabled = true;
+                        btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>جاري التحقق...`;
+                        
+                        try {
+                            const { data: { session }, error } = await supabase.auth.getSession();
+                            
+                            if (session) {
+                                statusDiv.className = 'alert alert-success';
+                                statusDiv.textContent = 'تم تأكيد حسابك بنجاح! جاري تحويلك إلى المتجر...';
+                                statusDiv.classList.remove('d-none');
+                                
+                                setTimeout(() => {
+                                    window.location.href = 'index.html';
+                                }, 1500);
+                            } else {
+                                statusDiv.className = 'alert alert-warning';
+                                statusDiv.textContent = 'لم يتم تأكيد حسابك بعد. يرجى التحقق من بريدك الإلكتروني والضغط على رابط التأكيد.';
+                                statusDiv.classList.remove('d-none');
+                                
+                                btn.disabled = false;
+                                btn.innerHTML = `<i class="fas fa-sync-alt me-2"></i>التحقق من حالة التأكيد`;
+                            }
+                        } catch (error) {
+                            statusDiv.className = 'alert alert-danger';
+                            statusDiv.textContent = 'حدث خطأ أثناء التحقق من حالة حسابك. يرجى المحاولة مرة أخرى.';
+                            statusDiv.classList.remove('d-none');
+                            
+                            btn.disabled = false;
+                            btn.innerHTML = `<i class="fas fa-sync-alt me-2"></i>التحقق من حالة التأكيد`;
+                        }
+                    });
                 }
 
             } catch (error) {
