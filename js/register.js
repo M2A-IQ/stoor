@@ -1,11 +1,6 @@
 import { createAccount, signInWithGoogle } from './firebase.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    // إخفاء رسالة الترحيب عند تحميل الصفحة
-    const welcomeMessage = document.getElementById('welcomeMessage');
-    if (welcomeMessage) {
-        welcomeMessage.classList.add('d-none');
-    }
     // إزالة صف show-validation من جميع الحقول عند تحميل الصفحة
     document.querySelectorAll('.form-control').forEach(input => {
         input.classList.remove('show-validation');
@@ -109,12 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let errorMessage = 'حدث خطأ أثناء إنشاء الحساب';
             switch (error.code) {
                 case 'auth/email-already-in-use':
-                    errorMessage = 'البريد الإلكتروني مستخدم بالفعل';
-                    // إظهار رسالة الترحيب عند وجود حساب مسبق
-                    if (welcomeMessage) {
-                        welcomeMessage.classList.remove('d-none');
-                        welcomeMessage.scrollIntoView({ behavior: 'smooth' });
-                    }
+                    errorMessage = 'البريد الإلكتروني مستخدم بالفعل'
                     break;
                 case 'auth/invalid-email':
                     errorMessage = 'البريد الإلكتروني غير صالح';
