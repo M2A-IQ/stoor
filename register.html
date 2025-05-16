@@ -469,21 +469,22 @@
                           
                           try {
                               let attempts = 0;
-                              const maxAttempts = 3;
+                              const maxAttempts = 5;
                               
                               while (attempts < maxAttempts) {
                                   try {
                                       const { data: { user }, error } = await supabase.auth.getUser();
                                       
                                       if (error) {
+                                          console.error('خطأ في الحصول على معلومات المستخدم:', error);
                                           throw error;
                                       }
                                       
-                                      // إذا نجح الاتصال، نخرج من الحلقة
-                                      attempts = maxAttempts;
-
-                              
-                              if (user?.email_confirmed_at) {
+                                      if (user) {
+                                          // إذا نجح الاتصال وحصلنا على معلومات المستخدم، نخرج من الحلقة
+                                          attempts = maxAttempts;
+                                          
+                                          if (user?.email_confirmed_at) {
                                   statusDiv.className = 'alert alert-success';
                                   statusDiv.textContent = 'تم تأكيد حسابك بنجاح! جاري تحويلك إلى المتجر...';
                                   statusDiv.classList.remove('d-none');
@@ -491,32 +492,41 @@
                                   setTimeout(() => {
                                       window.location.href = 'index.html';
                                   }, 1500);
-                              } else {
-                                  // إعادة إرسال رابط التأكيد
-                                  const { error: resendError } = await supabase.auth.resend({
-                                      type: 'signup',
-                                      email: email
-                                  });
+                                          } else {
+                                              // إعادة إرسال رابط التأكيد
+                                              const { error: resendError } = await supabase.auth.resend({
+                                                  type: 'signup',
+                                                  email: email
+                                              });
 
-                                  if (resendError) {
-                                      throw resendError;
-                                  }
+                                              if (resendError) {
+                                                  throw resendError;
+                                              }
 
-                                  statusDiv.className = 'alert alert-warning';
-                                  statusDiv.textContent = 'لم يتم تأكيد بريدك الإلكتروني بعد. تم إرسال رابط تأكيد جديد، يرجى التحقق من بريدك.';
-                                  statusDiv.classList.remove('d-none');
-                              }
+                                              statusDiv.className = 'alert alert-warning';
+                                              statusDiv.textContent = 'لم يتم تأكيد بريدك الإلكتروني بعد. تم إرسال رابط تأكيد جديد، يرجى التحقق من بريدك.';
+                                              statusDiv.classList.remove('d-none');
+                                          }
+                                      }
                                   } catch (error) {
                                       attempts++;
+                                      console.error(`محاولة ${attempts} من ${maxAttempts} فشلت:`, error);
+                                      
                                       if (attempts >= maxAttempts) {
                                           statusDiv.className = 'alert alert-danger';
                                           statusDiv.textContent = 'فشلت محاولات الاتصال. يرجى التأكد من اتصالك بالإنترنت والمحاولة مرة أخرى.';
                                           statusDiv.classList.remove('d-none');
-                                          console.error('خطأ في التحقق من حالة الحساب:', error);
                                           break;
+                                      } else {
+                                          // عرض رسالة للمستخدم أثناء المحاولة مرة أخرى
+                                          statusDiv.className = 'alert alert-warning';
+                                          statusDiv.textContent = `جاري المحاولة مرة أخرى... (${attempts} من ${maxAttempts})`;
+                                          statusDiv.classList.remove('d-none');
                                       }
-                                      // انتظار قبل المحاولة التالية
-                                      await new Promise(resolve => setTimeout(resolve, 1000));
+                                      
+                                      // زيادة وقت الانتظار مع كل محاولة
+                                      const waitTime = Math.min(2000 * attempts, 10000); // انتظار أطول مع كل محاولة، بحد أقصى 10 ثوانٍ
+                                      await new Promise(resolve => setTimeout(resolve, waitTime));
                                   }
                               }
                           } catch (error) {
