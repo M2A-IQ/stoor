@@ -107,4 +107,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // معالجة التبديل إلى صفحة إنشاء حساب
+    const registerToggleBtn = document.getElementById('registerToggleBtn');
+    if (registerToggleBtn) {
+        registerToggleBtn.addEventListener('click', () => {
+            window.location.href = 'register.html';
+        });
+    }
 });

@@ -148,4 +148,12 @@ document.addEventListener('DOMContentLoaded', () => {
             showError('حدث خطأ في تسجيل الدخول باستخدام Google');
         }
     };
+
+    // معالجة التبديل إلى صفحة تسجيل الدخول
+    const loginToggleBtn = document.getElementById('loginToggleBtn');
+    if (loginToggleBtn) {
+        loginToggleBtn.addEventListener('click', () => {
+            window.location.href = 'login.html';
+        });
+    }
 });
