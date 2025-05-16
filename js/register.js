@@ -109,13 +109,12 @@ document.addEventListener('DOMContentLoaded', () => {
             let errorMessage = 'حدث خطأ أثناء إنشاء الحساب';
             switch (error.code) {
                 case 'auth/email-already-in-use':
+                    errorMessage = 'البريد الإلكتروني مستخدم بالفعل';
                     // إظهار رسالة الترحيب عند وجود حساب مسبق
                     if (welcomeMessage) {
                         welcomeMessage.classList.remove('d-none');
                         welcomeMessage.scrollIntoView({ behavior: 'smooth' });
-                        return;
                     }
-                    errorMessage = 'البريد الإلكتروني مستخدم بالفعل';
                     break;
                 case 'auth/invalid-email':
                     errorMessage = 'البريد الإلكتروني غير صالح';
